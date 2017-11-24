@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Breathe - Air Quality Index</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="resources/css/styles.css">
+
+</head>
+<body>
+
+  <div class="columns main-container">
+    <div class="column is-5 map">
+      <input id="txtMapSearch" class="map-search" type="search" placeholder="Search Place">
+      <div id="map"></div>
+      <!--
+      <div class="columns is-flex-mobile aqi-range">
+        <div class="column">Good</div>
+        <div class="column">Moderate</div>
+        <div class="column">USG</div>
+        <div class="column">Unhealthy</div>
+        <div class="column">VU</div>
+        <div class="column">Hazardous</div>
+      </div>-->
+      <div class="aqi-range-new">
+        <div class="division" style="color: #0ACD47;">
+          <div class="color" style="background: #0ACD47;"></div>
+          Good
+        </div>
+        <div class="division" style="color: #F5DB2A;">
+          <div class="color" style="background: #F5DB2A;"></div>
+          Moderate
+        </div>
+        <div class="division" style="color: #F99846;">
+          <div class="color" style="background: #F99846;"></div>
+          Unhealthy
+        </div>
+        <div class="division" style="color: #F16A62;">
+          <div class="color" style="background: #F16A62;"></div>
+          Unhealthy
+        </div>
+        <div class="division" style="color: #80518E;">
+          <div class="color" style="background: #80518E;"></div>
+          VU
+        </div>
+        <div class="division" style="color: #6B1C31;">
+          <div class="color" style="background: #6B1C31;"></div>
+          Hazardous
+        </div>
+      </div>
+    </div>
+    <div class="column information">
+
+      <div class="section">
+        <div class="title">Current Conditions</div>
+        <div class="card main">
+          <div class="columns">
+            <div class="column is-3 badge-container">
+              <div class="badge good" id="badgeMain">35</div>
+            </div>
+            <div class="column details">
+              <div class="main-title">Air Quality Index (AQI)</div>
+              <div class="sub-title">Observed at <span id="timeObserved">16:00 PDT</span></div>
+
+              <div class="health-message">Health Message: <span class="label" id="mainHealthMessage">None</span></div>
+            </div>
+          </div>
+
+          <div class="copy">
+            Note: Values above 500 are considered  Beyond the AQI. Follow recommendations for the
+            Hazardous category. Additional information on reducing exposure to extremely high
+            levels of particle pollution <a href="https://airnow.gov/index.cfm?action=aqibasics.pmhilevels" target="_blank">is available here</a>.
+          </div>
+
+          <hr>
+
+          <div class="title" style="font-size: 1rem;">AQI - Pollutant Details</div>
+          <div class="columns additional-details">
+            <div class="column">
+              <div class="badge small good" id="badgeOzone">25</div>
+              <div class="main-title" id='txtPollutant'>Ozone</div>
+            </div>
+            <div class="column">
+              <div class="badge small moderate" id="badgePM">65</div>
+              <div class="main-title">Particles <span id="txtPM">(PM 2.5)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="title">Air quality Forecast</div>
+        <div class="card">
+          <div class="columns other-data">
+            <div class="column other-data-today is-block-mobile">
+              <div class="day-title">Today</div>
+              <div class="columns">
+                <div class="column is-4">
+                  <div class="badge good small" id="badgeMainOtherToday">38</div>
+                </div>
+                <div class="column" style="margin:auto 0;">
+                  <div class="main-title">Air Quality Index (AQI)</div>
+                  <div class="health-message">Health: <span class="label" id="healthMessageOtherToday">None</span></div>
+                </div>
+              </div>
+              <hr class="is-hidden-mobile">
+              <div class="day-title">AQI Pollutant Details</div>
+              <div class="columns">
+                <div class="column">
+                  <div class="columns">
+                    <div class="column is-4">
+                      <div class="badge smallest good" id="badgeOzoneOtherToday">36</div>
+                    </div>
+                    <div class="column" style="margin: auto;">
+                      <div class="main-title">Ozone</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="columns">
+                    <div class="column is-4">
+                      <div class="badge smallest moderate" id="badgePMOtherToday">48</div>
+                    </div>
+                    <div class="column" style="margin: auto;">
+                      <div class="main-title">Particles <span>(PM 2.5)</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="is-flex-mobile">
+            <div class="column is-block-mobile">
+              <div class="day-title">Tomorrow</div>
+              <div class="columns">
+                <div class="column is-4">
+                  <div class="badge good small">25</div>
+                </div>
+                <div class="column" style="margin:auto 0;">
+                  <div class="main-title">Air Quality Index (AQI)</div>
+                  <div class="health-message">Health: <span class="label">None</span></div>
+                </div>
+              </div>
+              <hr class="is-hidden-mobile">
+              <div class="day-title">AQI Pollutant Details</div>
+              <div class="columns">
+                <div class="column">
+                  <div class="columns">
+                    <div class="column is-4">
+                      <div class="badge smallest good">36</div>
+                    </div>
+                    <div class="column" style="margin: auto;">
+                      <div class="main-title">Ozone</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="columns">
+                    <div class="column is-4">
+                      <div class="badge smallest good">32</div>
+                    </div>
+                    <div class="column" style="margin: auto;">
+                      <div class="main-title">Particles <span>(PM 2.5)</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+          <i class="material-icons">code</i> with <i class="material-icons" style="color: #F16A62; font-size: 20px; top: 5px;">favorite</i> by <a href="http://www.blenderskool.cf" target="_blank">Akash Hamirwasia</a>
+          <div class="version">v0.7</div>
+      </div>
+    </div>
+  </div>
+
+<script src="resources/js/app.js" charset="utf-8"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places&callback=initGMap"></script>
+<script src="resources/js/aqi-conc.js" charset="utf-8"></script>
+</body>
+</html>
