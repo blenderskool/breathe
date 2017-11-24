@@ -353,21 +353,39 @@
   user-select: none;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  width: 50px;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.1) 3px 5px 10px;
+}
+.logo span {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
 
 .footer {
   padding: 20px 0 0 0;
   text-align: center;
   user-select: none;
 }
-
 .footer .material-icons {
-  position: relative;
-  top: 7px;
+  margin: 2px;
 }
-
-.footer .version {
-  color: #BDBDC6;
-  text-align: right;
+.footer a {
+  margin-left: 4px;
+}
+.footer .column:first-child {
+  text-align: left;
+}
+.footer .column:nth-child(2) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 
@@ -379,7 +397,11 @@
   }
 
   .map {
-    height: 250px;
+    height: 400px;
+  }
+
+  .aqi-range-new {
+    bottom: 30px;
   }
 
   .badge-container {
@@ -398,6 +420,14 @@
 
   .main .additional-details .main-title {
     margin-left: 5px;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .footer .column:nth-child(2) {
+    justify-content: center;
   }
 
 }
