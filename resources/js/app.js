@@ -7,6 +7,8 @@ function httpGet(theUrl)
 }
 
 let map;
+let shapes = [];
+let distances = [];
 let IPgeo = JSON.parse(httpGet('https://freegeoip.net/json/'));
 
 // Initializes the Google Maps
@@ -14,7 +16,7 @@ function initGMap() {
     map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: IPgeo.latitude, lng: IPgeo.longitude },
     zoom: 8,
-    maxZoom: 15,
+    maxZoom: 14,
     mapTypeId: 'roadmap',
     mapTypeControl: false,
     streetViewControl: false,
@@ -25,7 +27,7 @@ function initGMap() {
   // Create the search box and link it to the UI element.
   var input = document.getElementById('txtMapSearch');
   var searchBox = new google.maps.places.SearchBox(input);
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('mapControls'));
 
   // Bias the SearchBox results towards current map's viewport.
   map.addListener('bounds_changed', function() {
@@ -56,11 +58,10 @@ function initGMap() {
         bounds.extend(place.geometry.location);
       }
 
+      map.fitBounds(bounds);
+      map.setZoom(map.getZoom() - 3);
       aqiCall(place.geometry.location.lat(), place.geometry.location.lng());
-
     });
-
-    map.fitBounds(bounds);
   });
 
 }
@@ -69,7 +70,41 @@ function initGMap() {
 let data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+IPgeo.latitude+';'+IPgeo.longitude+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
 renderDOM(data);
 
+/*
+document.getElementById('txtMapSearch').addEventListener('keyup', function() {
+  var customMapItems = document.getElementsByClassName('maps-custom-item');
+  var _this = this;
+
+  setTimeout(function () { // Delay to match with Google Search results
+    if (_this.value) {
+      for (var i = 0; i < customMapItems.length; i++)
+        customMapItems[i].style.display = 'block';
+    }
+    else if (!_this.value) {
+      for (var i = 0; i < customMapItems.length; i++)
+        customMapItems[i].style.display = 'none';
+    }
+
+  }, 100);
+
+});
+document.getElementById('txtMapSearch').onblur = function() {
+  var customMapItems = document.getElementById('customMapItems')
+  for (var i = 0; i < customMapItems.length; i++)
+    customMapItems[i].style.display = 'none';
+}
+document.getElementById('txtMapSearch').onfocus = function() {
+  var customMapItems = document.getElementById('customMapItems')
+  for (var i = 0; i < customMapItems.length; i++)
+    customMapItems[i].style.display = 'block';
+}
+*/
+
 function renderDOM(data) {
+
+  if (data.status == 'nope' || data.status == 'error')
+    return;
+
   var badgeMain = document.getElementById('badgeMain');
   var badgeMainOtherToday = document.getElementById('badgeMainOtherToday');
 
@@ -100,23 +135,6 @@ function renderDOM(data) {
   var aqi = data.data.aqi;
   var time = new Date(data.data.time.v);
 
-  if (data.data.dominentpol == 'pm10' || !data.data.iaqi.hasOwnProperty('o3')) {
-    if (!data.data.iaqi.hasOwnProperty('pm25')) {
-      pm = data.data.iaqi.pm10.v;
-      document.getElementById('txtPM').innerText = '(PM 1.0)';
-    }
-    else {
-      pm = data.data.iaqi.pm25.v;
-      document.getElementById('txtPM').innerText = '(PM 2.5)';
-    }
-  }
-  else {
-    o3 = data.data.iaqi.o3.v;
-    pm = data.data.iaqi.pm25.v;
-    document.getElementById('txtPM').innerText = '(PM 2.5)';
-    document.getElementById('txtPollutant').innerText = 'Ozone';
-  }
-
   if (data.data.iaqi.hasOwnProperty('o3')) {
     o3 = data.data.iaqi.o3.v;
     document.getElementById('txtPollutant').innerText = 'Ozone';
@@ -127,7 +145,7 @@ function renderDOM(data) {
   }
   else if (data.data.iaqi.hasOwnProperty('so2')) {
     o3 = data.data.iaqi.so2.v;
-    document.getElementById('txtPollutant').innerText = 'SO<sub>2</sub>';
+    document.getElementById('txtPollutant').innerHTML = 'SO<sub>2</sub>';
   }
   else if (data.data.iaqi.hasOwnProperty('co')) {
     o3 = data.data.iaqi.co.v;
@@ -135,7 +153,7 @@ function renderDOM(data) {
   }
 
 
-  if (data.data.dominentpol == 'pm10') {
+  if (data.data.dominentpol == 'pm10' || !data.data.iaqi.hasOwnProperty('pm25')) {
     pm = data.data.iaqi.pm10.v;
     document.getElementById('txtPM').innerText = '(PM 1.0)';
   }
@@ -175,6 +193,7 @@ function renderDOM(data) {
   timeObserved.innerText = time.getHours() + ':' + time.getMinutes();
 }
 
+
 function aqiCompare(aqi) {
   if (aqi <= 50)
     return 'good';
@@ -189,6 +208,22 @@ function aqiCompare(aqi) {
   else
     return 'hazardous';
 }
+
+function getStrokeColor(aqi) {
+  if (aqi <= 50)
+    return '#0ACD47';
+  else if (aqi <= 100)
+    return '#F5DB2A';
+  else if (aqi <=  150)
+    return '#F99846';
+  else if (aqi <= 200)
+    return '#F16A62';
+  else if (aqi <= 300)
+    return '#80518E';
+  else
+    return '#6B1C31';
+}
+
 
 function renderMapShapes() {
 
@@ -210,9 +245,91 @@ function renderMapShapes() {
 }
 
 function aqiCall(lat, lng) {
-
+  var cityCircle;
   var data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
 
-  console.log(data);
   renderDOM(data);
+
+  var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
+
+  var mapData = JSON.parse(httpGet('https://api.waqi.info/map/bounds/?latlng='+bounds+'&token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
+  var coordsCurrent = new google.maps.LatLng(lat, lng);
+
+  if (shapes.length != 0) {
+    for (var i = 0; i < shapes.length; i++) {
+      shapes[i].setMap(null);
+    }
+  }
+
+  distances = [];
+  for (var i=0; i < mapData.data.length; i++) {
+    if (mapData.data[i].aqi == '-')
+      continue;
+    var stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon)
+
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+100;
+
+    if (distance > 50000)
+      continue;
+
+    distances.push({
+      'distance': distance,
+      'coords': stationCoords,
+      'aqi': mapData.data[i].aqi
+    });
+  }
+
+  distances.sort(function(a,b) {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
+
+  for (var i=0; i < distances.length; i++) {
+    if (i != distances.length-1) {
+      var shape = new google.maps.Polygon({
+        paths: [getCirclePoints(distances[i].coords, distances[i].distance, 50, true),
+                getCirclePoints(distances[i+1].coords, distances[i+1].distance, 50, false)],
+        strokeColor: getStrokeColor(distances[i].aqi),
+        strokeOpacity: 0.7,
+        strokeWeight: 1,
+        fillColor: getStrokeColor(distances[i].aqi),
+        fillOpacity: 0.2
+      });
+      shape.setMap(map);
+      shapes.push(shape);
+   }
+   else {
+      var shape = new google.maps.Circle({
+        strokeColor: getStrokeColor(distances[i].aqi),
+        strokeOpacity: 0.7,
+        strokeWeight: 1,
+        fillColor: getStrokeColor(distances[i].aqi),
+        fillOpacity: 0.2,
+        map: map,
+        center: distances[i].coords,
+        radius: distances[i].distance
+      });
+      shape.setMap(map);
+      shapes.push(shape);
+   }
+  }
+
+  map.setZoom(14);
+
+}
+
+function getCirclePoints(center, radius, numPoints, clockwise) {
+  var points = [];
+  for (var i = 0; i < numPoints; ++i) {
+      var angle = i * 360 / numPoints;
+      if (!clockwise) {
+          angle = 360 - angle;
+      }
+
+      // the maps API provides geometrical computations
+      // just make sure you load the required library (libraries=geometry)
+      var p = google.maps.geometry.spherical.computeOffset(center, radius, angle);
+      points.push(p);
+  }
+
+  // 'close' the polygon
+  points.push(points[0]);
+  return points;
 }
