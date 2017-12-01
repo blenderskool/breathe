@@ -17,10 +17,10 @@
 .map-search {
   padding: 10px 5px 10px 0;
   margin-top: 15px;
+  width: 100%;
   text-indent: 15px;
   outline: none;
   border: none;
-  width: 75%;
   opacity: 0.8;
   background-color: white;
   color: #4a4a4a;
@@ -32,12 +32,10 @@
   user-select: none;
   transition: all 0.3s ease;
 }
-
 .map-search:focus {
   opacity: 1.0;
   transition: all 0.3s ease;
 }
-
 .map-search::-webkit-search-cancel-button{
 
   -webkit-appearance: none;
@@ -60,10 +58,15 @@
   transition: all 0.3s ease;
 }
 
+.map-controls {
+  width: 75%;
+}
+
 .pac-container {
   border-radius: 0rem 0rem 0.2rem 0.2rem;
   box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
-  margin-top: -2px;
+  /*margin-top: 42px;
+  border: 0;*/
 }
 
 .pac-item {
@@ -78,9 +81,32 @@
   cursor: pointer;
 }
 
+.maps-custom-item {
+  background-color: #FFFFFF;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 10px 12px 10px;
+  transition: all 0.25s ease;
+
+  display: none;
+}
+.maps-custom-item:hover {
+  background-color: #FAFAFA;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.maps-custom-item .material-icons {
+  font-size: 15px;
+  position: relative;
+  top: 2px;
+  margin-right: 8px;
+  color: #B3B3B3;
+}
+
 .information {
   background-color: #F6F6F8;
-  border-left: 5px solid white;
+  border-left: 5px solid #FFFFFF;
   padding: 20px 30px;
 
   overflow-y: scroll;
@@ -145,7 +171,7 @@
 
 .main .additional-details .main-title {
   display: inline-block;
-  margin-left: 20px;
+  margin-left: 10px;
   font-size: 25px;
 }
 
@@ -157,6 +183,7 @@
 .other-data .main-title {
   font-weight: 500;
   font-size: 16px;
+  margin-left: 5px;
 }
 
 .other-data .main-title span {
@@ -358,10 +385,9 @@
   align-items: center;
 }
 .logo img {
-  width: 50px;
+  width: 120px;
   border-radius: 0.2rem;
   overflow: hidden;
-  box-shadow: rgba(0, 0, 0, 0.1) 3px 5px 10px;
 }
 .logo span {
   font-size: 1.2rem;
@@ -394,6 +420,7 @@
   .information {
     padding: 10px 20px;
     border: 0;
+    overflow: visible;
   }
 
   .map {
