@@ -26,7 +26,10 @@
 
   <div class="columns main-container">
     <div class="column is-5 map">
-      <input id="txtMapSearch" class="map-search" type="search" placeholder="Search Place">
+      <div class="map-controls" id="mapControls">
+        <input id="txtMapSearch" class="map-search" type="search" placeholder="Search Place">
+        <div class="maps-custom-item" id="customMapItems"><i class="material-icons">home</i>Add Home</div>
+      </div>
       <div id="map"></div>
       <!--
       <div class="columns is-flex-mobile aqi-range">
@@ -188,8 +191,7 @@
       <div class="columns footer">
         <div class="column">
             <div class="logo">
-              <img src="android-chrome-256x256.png" alt="">
-              <span>Breathe</span>
+              <img src="resources/images/Breathe Logo With Text.png" alt="">
             </div>
           </div>
         <div class="column">
@@ -200,7 +202,7 @@
   </div>
 
 <script src="resources/js/app.js" charset="utf-8"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places&callback=initGMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places,geometry&callback=initGMap"></script>
 <script src="resources/js/aqi-conc.js" charset="utf-8"></script>
 </body>
 </html>
