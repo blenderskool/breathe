@@ -6,14 +6,14 @@ function httpGet(theUrl)
     return xmlHttp.responseText;
 }
 
-let map;
+let map, initZoom;
 let shapes = [];
 let distances = [];
 let IPgeo = JSON.parse(httpGet('https://freegeoip.net/json/'));
 
 // Initializes the Google Maps
 function initGMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: IPgeo.latitude, lng: IPgeo.longitude },
     zoom: 8,
     maxZoom: 14,
@@ -22,6 +22,11 @@ function initGMap() {
     streetViewControl: false,
     zoomControl: false,
     fullscreenControl: false
+  });
+
+  // Runs at the start of the app
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    aqiCall(IPgeo.latitude, IPgeo.longitude);
   });
 
   // Create the search box and link it to the UI element.
@@ -59,16 +64,16 @@ function initGMap() {
       }
 
       map.fitBounds(bounds);
-      map.setZoom(map.getZoom() - 3);
+      initZoom = map.getZoom();
+      map.setZoom(initZoom - 3);
       aqiCall(place.geometry.location.lat(), place.geometry.location.lng());
+      map.setZoom(initZoom);
     });
   });
 
 }
 
 //157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d
-let data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+IPgeo.latitude+';'+IPgeo.longitude+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
-renderDOM(data);
 
 /*
 document.getElementById('txtMapSearch').addEventListener('keyup', function() {
@@ -114,6 +119,7 @@ function renderDOM(data) {
   var badgePMOtherToday = document.getElementById('badgePMOtherToday');
 
   var timeObserved = document.getElementById('timeObserved');
+  var locObserved = document.getElementById('locObserved');
   var mainHealthMessage = document.getElementById('mainHealthMessage');
   var healthMessageOtherToday = document.getElementById('healthMessageOtherToday');
 
@@ -191,6 +197,8 @@ function renderDOM(data) {
   badgePMOtherToday.classList.add(aqiCompare(pm));
 
   timeObserved.innerText = time.getHours() + ':' + time.getMinutes();
+
+  locObserved.innerText = data.data.city.name;
 }
 
 
@@ -265,12 +273,9 @@ function aqiCall(lat, lng) {
   for (var i=0; i < mapData.data.length; i++) {
     if (mapData.data[i].aqi == '-')
       continue;
-    var stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon)
+    var stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon);
 
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+100;
-
-    if (distance > 50000)
-      continue;
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+1000;
 
     distances.push({
       'distance': distance,
@@ -282,10 +287,14 @@ function aqiCall(lat, lng) {
   distances.sort(function(a,b) {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
 
   for (var i=0; i < distances.length; i++) {
+
+    if (i < distances.length - 5)
+      continue;
+
     if (i != distances.length-1) {
       var shape = new google.maps.Polygon({
-        paths: [getCirclePoints(distances[i].coords, distances[i].distance, 50, true),
-                getCirclePoints(distances[i+1].coords, distances[i+1].distance, 50, false)],
+        paths: [getCirclePoints(distances[i].coords, distances[i].distance, 80, true),
+                getCirclePoints(distances[i+1].coords, distances[i+1].distance, 80, false)],
         strokeColor: getStrokeColor(distances[i].aqi),
         strokeOpacity: 0.7,
         strokeWeight: 1,
