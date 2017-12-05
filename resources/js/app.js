@@ -7,7 +7,7 @@ function httpGet(theUrl)
 }
 
 let map, initZoom;
-let shapes = [];
+let unionPoly;
 let distances = [];
 let IPgeo = JSON.parse(httpGet('https://freegeoip.net/json/'));
 
@@ -262,12 +262,10 @@ function aqiCall(lat, lng) {
 
   var mapData = JSON.parse(httpGet('https://api.waqi.info/map/bounds/?latlng='+bounds+'&token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
   var coordsCurrent = new google.maps.LatLng(lat, lng);
+  var geometryFactory = new jsts.geom.GeometryFactory();
 
-  if (shapes.length != 0) {
-    for (var i = 0; i < shapes.length; i++) {
-      shapes[i].setMap(null);
-    }
-  }
+  if (unionPoly)
+    unionPoly.setMap(null);
 
   distances = [];
   for (var i=0; i < mapData.data.length; i++) {
@@ -286,59 +284,37 @@ function aqiCall(lat, lng) {
 
   distances.sort(function(a,b) {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
 
+  var JSTSpoly = [];
+  var JSTSpolyUnion;
+
   for (var i=0; i < distances.length; i++) {
+    if (i == 5)
+      break;
 
-    if (i < distances.length - 5)
-      continue;
+    var shape = new google.maps.Polygon({
+      paths: getCirclePoints(distances[i].coords, distances[i].distance, 80, true)
+    });
 
-    if (i != distances.length-1) {
-      var shape = new google.maps.Polygon({
-        paths: [getCirclePoints(distances[i].coords, distances[i].distance, 80, true),
-                getCirclePoints(distances[i+1].coords, distances[i+1].distance, 80, false)],
-        strokeColor: getStrokeColor(distances[i].aqi),
-        strokeOpacity: 0.7,
-        strokeWeight: 1,
-        fillColor: getStrokeColor(distances[i].aqi),
-        fillOpacity: 0.2
-      });
-      shape.setMap(map);
-      shapes.push(shape);
-   }
-   else {
-      var shape = new google.maps.Circle({
-        strokeColor: getStrokeColor(distances[i].aqi),
-        strokeOpacity: 0.7,
-        strokeWeight: 1,
-        fillColor: getStrokeColor(distances[i].aqi),
-        fillOpacity: 0.2,
-        map: map,
-        center: distances[i].coords,
-        radius: distances[i].distance
-      });
-      shape.setMap(map);
-      shapes.push(shape);
-   }
+    JSTSpoly.push(geometryFactory.createPolygon(geometryFactory.createLinearRing(googleMaps2JSTS(shape.getPath()))));
+    JSTSpoly[i].normalize();
+
+    if (i == 0)
+      JSTSpolyUnion = JSTSpoly[i];
+    else
+      JSTSpolyUnion = JSTSpolyUnion.union(JSTSpoly[i]);
   }
+
+  var outputPath = jsts2googleMaps(JSTSpolyUnion);
+  unionPoly = new google.maps.Polygon({
+    map: map,
+    paths: outputPath,
+    strokeColor: getStrokeColor(data.data.aqi),
+    strokeOpacity: 0.6,
+    strokeWeight: 1,
+    fillColor: getStrokeColor(data.data.aqi),
+    fillOpacity: 0.35
+  });
 
   map.setZoom(14);
 
-}
-
-function getCirclePoints(center, radius, numPoints, clockwise) {
-  var points = [];
-  for (var i = 0; i < numPoints; ++i) {
-      var angle = i * 360 / numPoints;
-      if (!clockwise) {
-          angle = 360 - angle;
-      }
-
-      // the maps API provides geometrical computations
-      // just make sure you load the required library (libraries=geometry)
-      var p = google.maps.geometry.spherical.computeOffset(center, radius, angle);
-      points.push(p);
-  }
-
-  // 'close' the polygon
-  points.push(points[0]);
-  return points;
 }
