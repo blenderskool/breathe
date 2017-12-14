@@ -157,6 +157,7 @@ function renderDOM(data) {
     o3 = data.data.iaqi.co.v;
     document.getElementById('txtPollutant').innerText = 'CO';
   }
+  document.getElementById('txtPollutantToday').innerHTML = document.getElementById('txtPollutant').innerHTML;
 
 
   if (data.data.dominentpol == 'pm10' || !data.data.iaqi.hasOwnProperty('pm25')) {
@@ -167,24 +168,27 @@ function renderDOM(data) {
     pm = data.data.iaqi.pm25.v;
     document.getElementById('txtPM').innerText = '(PM 2.5)';
   }
+  document.getElementById('txtPMToday').innerText = document.getElementById('txtPM').innerText;
 
   badgeMain.innerText = aqi;
   badgeMainOtherToday.innerText = aqi;
   badgeMain.classList.add(aqiCompare(aqi));
   badgeMainOtherToday.classList.add(aqiCompare(aqi));
 
-  if (aqi <= 50) {
-    mainHealthMessage.innerText = 'Enjoy your day';
-    healthMessageOtherToday.innerText = 'Enjoy your day';
-  }
-  else if (aqi > 50 && aqi < 100) {
-    mainHealthMessage.innerText = 'Limit Outdoor Exertion, use mask';
-    healthMessageOtherToday.innerText = 'Limit Outdoor Exertion, use mask';
-  }
-  else {
-    badgeMain.classList.add('unhealthy-moderate');
-    healthMessageOtherToday.innerText = 'Limit Outdoor Exertion completely';
-  }
+  if (aqi <= 50)
+    mainHealthMessage.innerText = 'No Risk, enjoy your day';
+  else if (aqi <= 100)
+    mainHealthMessage.innerText = 'Small concern for people sensitive to air pollution';
+  else if (aqi <=  150)
+    mainHealthMessage.innerText = 'Children & Senior groups may experience health effects';
+  else if (aqi <= 200)
+    mainHealthMessage.innerText = 'Everyone may begin to experience health effects';
+  else if (aqi <= 300)
+    mainHealthMessage.innerText = 'everyone may experience more serious health effects';
+  else
+    mainHealthMessage.innerText = 'Health warnings of emergency conditions';
+
+  healthMessageOtherToday.innerText = mainHealthMessage.innerText;
 
   badgeOzone.innerText = o3;
   badgeOzoneOtherToday.innerText = o3;
