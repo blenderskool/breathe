@@ -275,7 +275,6 @@ function aqiCall(lat, lng) {
   var historyData = JSON.parse(httpGet('https://api.breezometer.com/baqi?datetime='+date+'&lat='+lat+'&lon='+lng+'&key=ecdfdf2a499d432983382635768127bd'));
 
   renderDOM(data);
-  console.log(data);
 
   var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
 
