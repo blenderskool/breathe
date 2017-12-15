@@ -95,13 +95,13 @@
           <hr>
 
           <div class="title" style="font-size: 1rem;">AQI - Pollutant Details</div>
-          <div class="columns additional-details">
+          <div class="columns is-multiline additional-details" id="pollutantDetails">
             <div class="column">
-              <div class="badge small good" id="badgeOzone">25</div>
+              <div class="badge smallest good" id="badgeOzone">25</div>
               <div class="main-title" id='txtPollutant'>Ozone</div>
             </div>
             <div class="column">
-              <div class="badge small moderate" id="badgePM">65</div>
+              <div class="badge smallest moderate" id="badgePM">65</div>
               <div class="main-title">Particles <span id="txtPM">(PM 2.5)</span></div>
             </div>
           </div>
@@ -125,7 +125,7 @@
               </div>
               <hr class="is-hidden-mobile">
               <div class="day-title">AQI Pollutant Details</div>
-              <div class="columns">
+              <div class="columns" id="pollutantDetailsToday">
                 <div class="column">
                   <div class="columns">
                     <div class="column is-4">
@@ -149,7 +149,7 @@
               </div>
             </div>
             <hr class="is-flex-mobile">
-            <div class="column is-block-mobile">
+            <div class="column is-block-mobile disabled">
               <div class="day-title">Tomorrow</div>
               <div class="columns">
                 <div class="column is-4">

@@ -112,9 +112,11 @@ function renderDOM(data) {
 
   var badgeMain = document.getElementById('badgeMain');
   var badgeMainOtherToday = document.getElementById('badgeMainOtherToday');
+  var containerPollutants = document.getElementById('pollutantDetails');
+  var contPollutantsToday = document.getElementById('pollutantDetailsToday');
+  containerPollutants.innerHTML = '';
+  contPollutantsToday.innerHTML = '';
 
-  var badgeOzone = document.getElementById('badgeOzone');
-  var badgePM = document.getElementById('badgePM');
   var badgeOzoneOtherToday = document.getElementById('badgeOzoneOtherToday');
   var badgePMOtherToday = document.getElementById('badgePMOtherToday');
 
@@ -128,47 +130,33 @@ function renderDOM(data) {
   badgeMainOtherToday.classList = [];
   badgeMainOtherToday.classList.add('badge', 'small');
 
-  badgeOzone.classList = [];
-  badgeOzone.classList.add('badge', 'small');
-  badgeOzoneOtherToday.classList = [];
-  badgeOzoneOtherToday.classList.add('badge', 'smallest');
-
-  badgePM.classList = [];
-  badgePM.classList.add('badge', 'small');
-  badgePMOtherToday.classList = [];
-  badgePMOtherToday.classList.add('badge', 'smallest');
-
   var aqi = data.data.aqi;
   var time = new Date(data.data.time.v);
 
-  if (data.data.iaqi.hasOwnProperty('o3')) {
-    o3 = data.data.iaqi.o3.v;
-    document.getElementById('txtPollutant').innerText = 'Ozone';
-  }
-  else if (data.data.iaqi.hasOwnProperty('no2')) {
-    o3 = data.data.iaqi.no2.v;
-    document.getElementById('txtPollutant').innerHTML = 'NO<sub>2</sub>';
-  }
-  else if (data.data.iaqi.hasOwnProperty('so2')) {
-    o3 = data.data.iaqi.so2.v;
-    document.getElementById('txtPollutant').innerHTML = 'SO<sub>2</sub>';
-  }
-  else if (data.data.iaqi.hasOwnProperty('co')) {
-    o3 = data.data.iaqi.co.v;
-    document.getElementById('txtPollutant').innerText = 'CO';
-  }
-  document.getElementById('txtPollutantToday').innerHTML = document.getElementById('txtPollutant').innerHTML;
+  for (var poll in data.data.iaqi) {
+    if (data.data.iaqi.hasOwnProperty(poll) && getTitle(poll)) {
+      var column = document.createElement('div');
+      column.classList.add('column');
 
+      var badge = document.createElement('div');
+      badge.classList.add('badge', 'smallest', aqiCompare(data.data.iaqi[poll].v));
+      badge.innerText = data.data.iaqi[poll].v;
 
-  if (data.data.dominentpol == 'pm10' || !data.data.iaqi.hasOwnProperty('pm25')) {
-    pm = data.data.iaqi.pm10.v;
-    document.getElementById('txtPM').innerText = '(PM 1.0)';
+      if (data.data.dominentpol == poll)
+        badge.classList.add('dominant');
+
+      var title = document.createElement('div');
+      title.classList.add('main-title');
+      title.innerText = getTitle(poll);
+
+      column.appendChild(badge);
+      column.appendChild(title);
+      containerPollutants.appendChild(column);
+
+      if (data.data.dominentpol == poll || contPollutantsToday.children.length == 0)
+        contPollutantsToday.appendChild(column.cloneNode(true));
+    }
   }
-  else {
-    pm = data.data.iaqi.pm25.v;
-    document.getElementById('txtPM').innerText = '(PM 2.5)';
-  }
-  document.getElementById('txtPMToday').innerText = document.getElementById('txtPM').innerText;
 
   badgeMain.innerText = aqi;
   badgeMainOtherToday.innerText = aqi;
@@ -184,21 +172,21 @@ function renderDOM(data) {
   else if (aqi <= 200)
     mainHealthMessage.innerText = 'Everyone may begin to experience health effects';
   else if (aqi <= 300)
-    mainHealthMessage.innerText = 'everyone may experience more serious health effects';
+    mainHealthMessage.innerText = 'Everyone may experience more serious health effects';
   else
-    mainHealthMessage.innerText = 'Health warnings of emergency conditions';
+    mainHealthMessage.innerText = 'Health warnings and emergency conditions';
 
   healthMessageOtherToday.innerText = mainHealthMessage.innerText;
 
-  badgeOzone.innerText = o3;
-  badgeOzoneOtherToday.innerText = o3;
-  badgeOzone.classList.add(aqiCompare(o3));
-  badgeOzoneOtherToday.classList.add(aqiCompare(o3));
-
-  badgePM.innerText = pm;
-  badgePMOtherToday.innerText = pm;
-  badgePM.classList.add(aqiCompare(pm));
-  badgePMOtherToday.classList.add(aqiCompare(pm));
+  // badgeOzone.innerText = o3;
+  // badgeOzoneOtherToday.innerText = o3;
+  // badgeOzone.classList.add(aqiCompare(o3));
+  // badgeOzoneOtherToday.classList.add(aqiCompare(o3));
+  //
+  // badgePM.innerText = pm;
+  // badgePMOtherToday.innerText = pm;
+  // badgePM.classList.add(aqiCompare(pm));
+  // badgePMOtherToday.classList.add(aqiCompare(pm));
 
   timeObserved.innerText = time.getHours() + ':' + time.getMinutes();
 
@@ -236,6 +224,25 @@ function getStrokeColor(aqi) {
     return '#6B1C31';
 }
 
+function getTitle(shortname) {
+  if (shortname == 'co')
+    return 'Carbon Monoxide';
+  else if (shortname == 'h')
+    return 'Hydrogen';
+  else if (shortname == 'no2')
+    return 'Nitrogen Oxide';
+  else if (shortname == 'o3')
+    return 'Ozone';
+  else if (shortname == 'pm10')
+    return 'PM (1.0)';
+  else if (shortname == 'pm25')
+    return 'PM (2.5)';
+  else if (shortname == 'so2')
+    return 'Sulphur Dioxide';
+  else
+    return null;
+}
+
 
 function renderMapShapes() {
 
@@ -259,8 +266,16 @@ function renderMapShapes() {
 function aqiCall(lat, lng) {
   var cityCircle;
   var data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
+  //var data = JSON.parse(httpGet('https://api.breezometer.com/baqi/?lat='+lat+'&lon='+lng+'&key=ecdfdf2a499d432983382635768127bd&fields=breezometer_aqibreezometer_aqi,country_aqi,pollutants,datetime'));
+
+  var date = new Date();
+  date.setDate(date.getDate()-1);
+  date = date.toJSON();
+  date = date.substring(0, date.length-5)
+  var historyData = JSON.parse(httpGet('https://api.breezometer.com/baqi?datetime='+date+'&lat='+lat+'&lon='+lng+'&key=ecdfdf2a499d432983382635768127bd'));
 
   renderDOM(data);
+  console.log(data);
 
   var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
 
