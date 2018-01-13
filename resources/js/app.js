@@ -266,13 +266,11 @@ function renderMapShapes() {
 function aqiCall(lat, lng) {
   var cityCircle;
   var data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
-  //var data = JSON.parse(httpGet('https://api.breezometer.com/baqi/?lat='+lat+'&lon='+lng+'&key=ecdfdf2a499d432983382635768127bd&fields=breezometer_aqibreezometer_aqi,country_aqi,pollutants,datetime'));
 
   var date = new Date();
   date.setDate(date.getDate()-1);
   date = date.toJSON();
   date = date.substring(0, date.length-5)
-  var historyData = JSON.parse(httpGet('https://api.breezometer.com/baqi?datetime='+date+'&lat='+lat+'&lon='+lng+'&key=ecdfdf2a499d432983382635768127bd'));
 
   renderDOM(data);
 
