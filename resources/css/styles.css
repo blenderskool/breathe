@@ -331,12 +331,6 @@
   padding: 0.5rem;
 }
 
-#pollutantDetailsToday .column .dominant {
-  border: 0;
-  padding: 0.7rem;
-}
-
-
 .aqi-range {
   background-color: #0acd47;
   background-image: -webkit-linear-gradient(left, #0acd47 0%, #f5db2a 18%, #f99846 40%, #f16a62 56%, #80518e 75%, #6b1c31 93%);
@@ -482,6 +476,7 @@
   }
   .other-data .column {
     display: inline-block;
+    text-align: center;
   }
 
   .main .additional-details {
