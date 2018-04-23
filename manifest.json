@@ -1,5 +1,6 @@
 {
     "name": "Breathe",
+    "short_name": "Breathe",
     "icons": [
         {
             "src": "/breathe/android-chrome-192x192.png?v=A0eyRwzWw5",
