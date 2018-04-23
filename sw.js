@@ -15,10 +15,10 @@ self.addEventListener('install', function(event) {
         'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css',
         'https://unpkg.com/axios/dist/axios.min.js',
         'https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.0.2/jsts.min.js',
-        'http://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDz8Z1xlFQ.woff2',
-        'http://fonts.gstatic.com/s/poppins/v5/pxiEyp8kv8JHgFVrJJfecg.woff2',
-        'http://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2',
-        'http://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2'
+        'https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDz8Z1xlFQ.woff2',
+        'https://fonts.gstatic.com/s/poppins/v5/pxiEyp8kv8JHgFVrJJfecg.woff2',
+        'https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2',
+        'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2'
       ])
     })
   );
