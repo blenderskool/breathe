@@ -15,9 +15,8 @@
   <meta name="application-name" content="Breathe">
   <meta name="theme-color" content="#2ad09e">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css">
+  <link rel="stylesheet" href="resources/css/fonts.css">
   <link rel="stylesheet" href="resources/css/styles.css">
 
 </head>
@@ -199,8 +198,14 @@
         </div>
       </div>
     </div>
+
+    <div class="has-background-dark has-text-light snack-bar">
+      <span id="snackMessage">Hello World</span>
+      <div class="button is-dark sw-update" id="btnSwUpdate">Update</div>
+    </div>
   </div>
   <script src="https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.0.2/jsts.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="resources/js/app.js" charset="utf-8"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places,geometry&callback=initGMap"></script>
   <script src="resources/js/utils.js" charset="utf-8"></script>
