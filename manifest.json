@@ -3,12 +3,12 @@
     "short_name": "Breathe",
     "icons": [
         {
-            "src": "/breathe/android-chrome-192x192.png?v=A0eyRwzWw5",
+            "src": "/android-chrome-192x192.png?v=A0eyRwzWw5",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/breathe/android-chrome-256x256.png?v=A0eyRwzWw5",
+            "src": "/android-chrome-256x256.png?v=A0eyRwzWw5",
             "sizes": "256x256",
             "type": "image/png"
         }
