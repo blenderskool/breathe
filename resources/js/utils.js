@@ -8,6 +8,8 @@ var googleMaps2JSTS = function(boundaries) {
 }
 
 var jsts2googleMaps = function(geometry) {
+  if (!geometry) return;
+
   var coordArray = geometry.getCoordinates();
   GMcoords = [];
   for (var i = 0; i < coordArray.length; i++) {
