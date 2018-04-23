@@ -1,15 +1,17 @@
-function httpGet(theUrl)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
+function httpGet(theUrl) {
+  /**
+   * HTTP Get request using XMLHttpRequest
+   */
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+  xmlHttp.send( null );
+  return xmlHttp.responseText;
 }
 
-let map, initZoom;
-let unionPoly;
-let distances = [];
-let IPgeo = JSON.parse(httpGet('https://freegeoip.net/json/'));
+var map, initZoom;
+var unionPoly;
+var distances = [];
+var IPgeo = JSON.parse(httpGet('https://freegeoip.net/json/'));
 
 // Initializes the Google Maps
 function initGMap() {
@@ -21,7 +23,52 @@ function initGMap() {
     mapTypeControl: false,
     streetViewControl: false,
     zoomControl: false,
-    fullscreenControl: false
+    fullscreenControl: false,
+    styles: [
+      {
+        "featureType": "poi.business",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "road.arterial",
+        "elementType": "labels",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "labels",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      },
+      {
+        "featureType": "road.local",
+        "stylers": [
+          {
+            "visibility": "off"
+          }
+        ]
+      }
+    ]
   });
 
   // Runs at the start of the app
@@ -39,8 +86,10 @@ function initGMap() {
     searchBox.setBounds(map.getBounds());
   });
 
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place.
+  /**
+   * Listen for the event fired when the user selects a prediction and retrieve
+   * more details for that place.
+   */
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
 
@@ -63,6 +112,10 @@ function initGMap() {
         bounds.extend(place.geometry.location);
       }
 
+      /**
+       * Fit the bounds of the map, zoom out of the map to get additional
+       * centres and reset zoom after aqi data is received.
+       */
       map.fitBounds(bounds);
       initZoom = map.getZoom();
       map.setZoom(initZoom - 3);
@@ -73,39 +126,7 @@ function initGMap() {
 
 }
 
-//157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d
-
-/*
-document.getElementById('txtMapSearch').addEventListener('keyup', function() {
-  var customMapItems = document.getElementsByClassName('maps-custom-item');
-  var _this = this;
-
-  setTimeout(function () { // Delay to match with Google Search results
-    if (_this.value) {
-      for (var i = 0; i < customMapItems.length; i++)
-        customMapItems[i].style.display = 'block';
-    }
-    else if (!_this.value) {
-      for (var i = 0; i < customMapItems.length; i++)
-        customMapItems[i].style.display = 'none';
-    }
-
-  }, 100);
-
-});
-document.getElementById('txtMapSearch').onblur = function() {
-  var customMapItems = document.getElementById('customMapItems')
-  for (var i = 0; i < customMapItems.length; i++)
-    customMapItems[i].style.display = 'none';
-}
-document.getElementById('txtMapSearch').onfocus = function() {
-  var customMapItems = document.getElementById('customMapItems')
-  for (var i = 0; i < customMapItems.length; i++)
-    customMapItems[i].style.display = 'block';
-}
-*/
-
-function renderDOM(data) {
+async function renderDOM(data) {
 
   if (data.status == 'nope' || data.status == 'error')
     return;
@@ -133,6 +154,9 @@ function renderDOM(data) {
   var aqi = data.data.aqi;
   var time = new Date(data.data.time.v);
 
+  /**
+   * Add each pollutants level to the DOM
+   */
   for (var poll in data.data.iaqi) {
     if (data.data.iaqi.hasOwnProperty(poll) && getTitle(poll)) {
       var column = document.createElement('div');
@@ -190,10 +214,13 @@ function renderDOM(data) {
 
   timeObserved.innerText = time.getHours() + ':' + time.getMinutes();
 
-  locObserved.innerText = data.data.city.name;
+  locObserved.innerText = Math.round(data.data.city.distance/1000)+'km - '+data.data.city.name;
 }
 
-
+/**
+ * Returns the class name based on aqi level
+ * This is used in css to render different colors for every aqi level
+ */
 function aqiCompare(aqi) {
   if (aqi <= 50)
     return 'good';
@@ -209,6 +236,9 @@ function aqiCompare(aqi) {
     return 'hazardous';
 }
 
+/**
+ * Returns the hex color code based on the aqi level provided
+ */
 function getStrokeColor(aqi) {
   if (aqi <= 50)
     return '#0ACD47';
@@ -224,6 +254,9 @@ function getStrokeColor(aqi) {
     return '#6B1C31';
 }
 
+/**
+ * Gets the title of the pollutant based on short name
+ */
 function getTitle(shortname) {
   if (shortname == 'co')
     return 'Carbon Monoxide';
@@ -244,52 +277,54 @@ function getTitle(shortname) {
 }
 
 
-function renderMapShapes() {
-
-  var triangleCoords = [
-    {lat: 25.774, lng: -80.190},
-    {lat: 18.466, lng: -66.118},
-    {lat: 32.321, lng: -64.757},
-    {lat: 25.774, lng: -80.190}
-  ];
-
-  // Construct the polygon.
-  var bermudaTriangle = new google.maps.Polygon({
-    paths: triangleCoords,
-    strokeWeight: 0,
-    fillColor: '#0ACD47',
-    fillOpacity: 0.35
-  });
-  bermudaTriangle.setMap(map);
-}
-
-function aqiCall(lat, lng) {
+/**
+ * Gets the data from the API based on latitude and longitude and renders the data
+ * to the DOM
+ */
+async function aqiCall(lat, lng) {
   var cityCircle;
-  var data = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
+  var coordsCurrent = new google.maps.LatLng(lat, lng);
+  var apiData = {status: ''};
 
-  var date = new Date();
-  date.setDate(date.getDate()-1);
-  date = date.toJSON();
-  date = date.substring(0, date.length-5)
+  /**
+   * Based on updated API, calls are made until a proper result is returned
+   * 'nug' error code is not mentioned in documentation for what it means.
+   */
+  while (apiData.status === '' || apiData.status === 'nug') {
+    apiData = JSON.parse(httpGet('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
+  }
+  // Calculate the distance of the place and add it to the API data
+  var stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
+  apiData.data.city.distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords);
 
-  renderDOM(data);
+  // Render the data to the DOM
+  renderDOM(apiData);
 
+  // Bounds of the map which are displayed on the screen
   var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
 
+  // Additional data from the API using the bounds that we get above
   var mapData = JSON.parse(httpGet('https://api.waqi.info/map/bounds/?latlng='+bounds+'&token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d'));
-  var coordsCurrent = new google.maps.LatLng(lat, lng);
   var geometryFactory = new jsts.geom.GeometryFactory();
 
   if (unionPoly)
     unionPoly.setMap(null);
 
+  /**
+   * Get the distance between the lat and lng for the centre and the point
+   * at which the user wants aqi
+   */
   distances = [];
   for (var i=0; i < mapData.data.length; i++) {
     if (mapData.data[i].aqi == '-')
       continue;
     var stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon);
 
+    // Add 1000m to the exact distance calculated
     var distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+1000;
+
+    // Distances greater than 20km would not be rendered in the map
+    if (distance > 20000) continue;
 
     distances.push({
       'distance': distance,
@@ -298,15 +333,18 @@ function aqiCall(lat, lng) {
     });
   }
 
+  // Sort the distances
   distances.sort(function(a,b) {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
 
   var JSTSpoly = [];
   var JSTSpolyUnion;
 
   for (var i=0; i < distances.length; i++) {
+    // Only first 5 centre data is taken to keep processing simple
     if (i == 5)
       break;
 
+    // Generate a circle based on centre, radius, number of points
     var shape = new google.maps.Polygon({
       paths: getCirclePoints(distances[i].coords, distances[i].distance, 80, true)
     });
@@ -314,23 +352,28 @@ function aqiCall(lat, lng) {
     JSTSpoly.push(geometryFactory.createPolygon(geometryFactory.createLinearRing(googleMaps2JSTS(shape.getPath()))));
     JSTSpoly[i].normalize();
 
+    /**
+     * We take union of all the circles created to get a single polygon that
+     * is to be rendered on the map
+     */
     if (i == 0)
       JSTSpolyUnion = JSTSpoly[i];
     else
       JSTSpolyUnion = JSTSpolyUnion.union(JSTSpoly[i]);
   }
 
-  var outputPath = jsts2googleMaps(JSTSpolyUnion);
+  var outputPath = jsts2googleMaps(JSTSpolyUnion); // Return the final polygon to be rendered
   unionPoly = new google.maps.Polygon({
     map: map,
     paths: outputPath,
-    strokeColor: getStrokeColor(data.data.aqi),
+    strokeColor: getStrokeColor(apiData.data.aqi), // Set the colors based on the aqi data that we get
     strokeOpacity: 0.6,
     strokeWeight: 1,
-    fillColor: getStrokeColor(data.data.aqi),
+    fillColor: getStrokeColor(apiData.data.aqi),
     fillOpacity: 0.35
   });
 
+  // Reset the zoom level of the map
   map.setZoom(14);
 
 }
