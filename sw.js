@@ -1,4 +1,4 @@
-var staicCacheName = 'breathe-static-v1';
+var staicCacheName = 'breathe-static-v2';
 
 self.addEventListener('install', function(event) {
 
