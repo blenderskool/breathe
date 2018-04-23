@@ -411,6 +411,7 @@
   padding: 20px 0 0 0;
   text-align: center;
   user-select: none;
+  background-color: transparent;
 }
 .footer .material-icons {
   margin: 2px;
@@ -445,6 +446,25 @@
   bottom: 0;
   display: block;
   padding-top: 50%;
+}
+
+.snack-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 10px 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
+}
+.snack-bar .sw-update {
+  color: #2ad09e;
+  margin-left: auto;
+  text-transform: uppercase;
+  display: none;
 }
 
 
