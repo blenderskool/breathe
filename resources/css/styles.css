@@ -39,7 +39,7 @@
 .map-search::-webkit-search-cancel-button{
 
   -webkit-appearance: none;
-  background: url('/breathe/resources/images/input-close.svg');
+  background: url('/resources/images/input-close.svg');
   background-size: auto;
   background-repeat: no-repeat;
   background-position: center center;
