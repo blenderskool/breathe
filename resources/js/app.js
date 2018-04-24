@@ -327,6 +327,7 @@ function _getTitle(shortname) {
 async function aqiCall(lat, lng) {
   var cityCircle;
   var coordsCurrent = new google.maps.LatLng(lat, lng);
+  var txtMapSearch = document.getElementById('txtMapSearch');
   var apiData = {status: ''};
 
   /**
@@ -336,8 +337,60 @@ async function aqiCall(lat, lng) {
    * TODO: Show message to the user if data at a certain location is not available
    */
   while (apiData.status === '' || apiData.status === 'nug') {
-    apiData = (await axios.get('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/?token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d')).data;
+    apiData = (await axios.get('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/', {
+      params: {
+        token: '157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d',
+        key: txtMapSearch.value ? txtMapSearch.value : 'ip'
+      }
+    })).data;
   }
+
+  /**
+   * Store the data for offline usage using localForage
+   * We store at most 30 places data and keep 15 most recent places stored
+   * at all times
+   */
+  localforage.setItem(txtMapSearch.value ? txtMapSearch.value : 'ip', {
+    apiData: apiData,
+    time: new Date(),
+    key: txtMapSearch.value ? txtMapSearch.value : 'ip'
+  })
+  .then(function() {
+    return localforage.keys();
+  })
+  .then(function(keys) {
+    if (keys.length < 30) return;
+
+    return Promise.all(
+      keys.map(function(key) {
+        return localforage.getItem(key)
+      })
+    );
+  })
+  .then(function(storedData) {
+    if (!storedData) return;
+
+    storedData.sort(function(a, b) {
+      return new Date(b.time) - new Date(a.time);
+    });
+
+    // Take the 15 most recent data
+    storedData.splice(-15);
+
+    // Clear the old data, and store the new array of data
+    localforage.clear()
+    .then(function() {
+      storedData.forEach(function(data) {
+        localforage.setItem(data.key, data);
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+    })
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
 
   // Calculate the distance of the place and add it to the API data
   var stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
