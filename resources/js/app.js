@@ -164,7 +164,7 @@ async function renderDOM(data) {
 
       var badge = document.createElement('div');
       badge.classList.add('badge', 'smallest', aqiCompare(data.data.iaqi[poll].v));
-      badge.innerText = data.data.iaqi[poll].v;
+      badge.innerText = Math.round(data.data.iaqi[poll].v*10)/10;
 
       if (data.data.dominentpol == poll)
         badge.classList.add('dominant');
