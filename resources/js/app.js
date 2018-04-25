@@ -229,7 +229,7 @@ function _renderDOM(data) {
 
       var badge = document.createElement('div');
       badge.classList.add('badge', 'smallest', _aqiStatus(data.data.iaqi[poll].v));
-      badge.innerText = data.data.iaqi[poll].v;
+      badge.innerText = Math.round(data.data.iaqi[poll].v*10)/10;
 
       if (data.data.dominentpol == poll)
         badge.classList.add('dominant');
