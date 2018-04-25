@@ -31,6 +31,28 @@ function _registerServiceWorker() {
     window.location.reload();
   });
 
+  navigator.serviceWorker.addEventListener('message', function(event) {
+    /**
+     * If Maps API was not available then there is no network connection, hence
+     * hide the Maps container and make app usable for offline users.
+     */
+    if (event.data.message === 'mapsoffline') {
+      _showOfflinePlaces();
+    }
+    /**
+     * If IP data isn't available then get stored IP data and render it to the DOM
+     */
+    else if (event.data.message === 'ipoffline') {
+      localforage.getItem('ip')
+      .then(function(data) {
+        var geo = data.apiData.data.city.geo;
+        aqiCall(geo[0], geo[1], 'ip');
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    }
+  })
 }
 _registerServiceWorker();
 
@@ -111,7 +133,7 @@ function initGMap() {
     .then(function(response) {
       var location = response.data.location;
       map.setCenter(new google.maps.LatLng(location.latitude, location.longitude))
-      aqiCall(location.latitude, location.longitude);
+      aqiCall(location.latitude, location.longitude, 'ip');
     })
     .catch(function(err) {
       console.log(err);
@@ -324,11 +346,12 @@ function _getTitle(shortname) {
  * Gets the data from the API based on latitude and longitude and renders the data
  * to the DOM
  */
-async function aqiCall(lat, lng) {
+async function aqiCall(lat, lng, placeName) {
   var cityCircle;
   var coordsCurrent = new google.maps.LatLng(lat, lng);
   var txtMapSearch = document.getElementById('txtMapSearch');
   var apiData = {status: ''};
+  var placeName = placeName ? placeName : txtMapSearch.value;
 
   /**
    * Based on updated API, calls are made until a proper result is returned
@@ -340,7 +363,7 @@ async function aqiCall(lat, lng) {
     apiData = (await axios.get('https://api.waqi.info/feed/geo:'+lat+';'+lng+'/', {
       params: {
         token: '157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d',
-        key: txtMapSearch.value ? txtMapSearch.value : 'ip'
+        key: placeName
       }
     })).data;
   }
@@ -350,10 +373,10 @@ async function aqiCall(lat, lng) {
    * We store at most 30 places data and keep 15 most recent places stored
    * at all times
    */
-  localforage.setItem(txtMapSearch.value ? txtMapSearch.value : 'ip', {
+  localforage.setItem(placeName, {
     apiData: apiData,
     time: new Date(),
-    key: txtMapSearch.value ? txtMapSearch.value : 'ip'
+    key: placeName
   })
   .then(function() {
     return localforage.keys();
@@ -393,11 +416,19 @@ async function aqiCall(lat, lng) {
   });
 
   // Calculate the distance of the place and add it to the API data
-  var stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
-  apiData.data.city.distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords);
+  if (!apiData.data.city.distance) {
+    var stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
+    apiData.data.city.distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords);
+  }
 
   // Render the data to the DOM
   _renderDOM(apiData);
+
+  // If the map is hidden then don't try to render AQI chart
+  if (document.querySelector('.map').style.display === 'none') return;
+
+  
+  /** AQI chart rendering */
 
   // Bounds of the map which are displayed on the screen
   var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
@@ -523,4 +554,33 @@ function _initSWUpdateBtn(worker) {
   btn.addEventListener('click', function() {
     worker.postMessage({ action: 'skipWaiting' });
   });
+}
+
+/**
+ * Hides the Maps and renders a list of places stored locally for which
+ * AQI data can be accessed
+ */
+function _showOfflinePlaces() {
+  // Hide the maps
+  var mapsRef = document.querySelector('.map');
+  mapsRef.style.display = 'none';
+
+  var list = document.getElementById('offlinePlaces');
+  list.innerHTML = '';
+  localforage.iterate(function(data, key) {
+    if (!key || key === 'ip') return;
+
+    var place = document.createElement('li');
+    place.innerText = key;
+    place.classList.add('card');
+    place.addEventListener('click', function() {
+      var geo = data.apiData.data.city.geo;
+      aqiCall(geo[0], geo[1], key);
+    });
+
+    list.appendChild(place);
+  });
+
+  // Show the container
+  list.parentElement.style.display = 'block';
 }

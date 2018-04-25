@@ -1,7 +1,9 @@
-var staicCacheName = 'breathe-static-v2';
+// Use LocalForage to store, get data and use it when offline
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.1/localforage.min.js');
+
+var staicCacheName = 'breathe-static-v1';
 
 self.addEventListener('install', function(event) {
-
   event.waitUntil(
     caches.open(staicCacheName).then(function(cache) {
       return cache.addAll([
@@ -45,6 +47,63 @@ self.addEventListener('fetch', function(event) {
       if (response) return response;
 
       return fetch(event.request);
+    })
+    .catch(function(err) {
+      /**
+       * If fetch() wasn't successful, then we check if the API data is stored locally,
+       * and send it back if found.
+       */
+      if (event.request.url.startsWith('https://api.waqi.info/feed/geo')) {
+        var url = new URL(event.request.url);
+        var key = url.searchParams.get('key');
+        
+        return localforage.getItem(key)
+        .then(function(data) {
+          // Make the request if data is not stored
+          if (!data) return fetch(event.request);
+
+          // Return the stored response
+          return new Response(JSON.stringify(data.apiData));
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      }
+      /**
+       * If request to Google Maps has failed, then send a message to main app
+       * to setup an offline experience for the user
+       */
+      else if (event.request.url.startsWith('https://maps.googleapis.com/maps/api')) {
+        if (!event.clientId) return;
+
+        clients.get(event.clientId)
+        .then(function(client) {
+          client.postMessage({
+            message: 'mapsoffline'
+          });
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      }
+
+      /**
+       * If request is made to get IP data, then send a message to main app to
+       * use the locally stored IP data for offline use
+       */
+      else if (event.request.url.startsWith('https://geoip.nekudo.com/api/')) {
+        if (!event.clientId) return;
+
+        clients.get(event.clientId)
+        .then(function(client) {
+          client.postMessage({
+            message: 'ipoffline'
+          });
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      }
     })
   );
 });
