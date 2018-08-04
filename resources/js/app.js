@@ -65,7 +65,7 @@ function _trackInstalling(worker) {
   });
 }
 
-var map, initZoom;
+var map, initZoom, timeout;
 var unionPoly;
 var distances = [];
 
@@ -347,11 +347,18 @@ function _getTitle(shortname) {
  * to the DOM
  */
 async function aqiCall(lat, lng, placeName) {
-  var cityCircle;
   var coordsCurrent = new google.maps.LatLng(lat, lng);
   var txtMapSearch = document.getElementById('txtMapSearch');
   var apiData = {status: ''};
   var placeName = placeName ? placeName : txtMapSearch.value;
+
+  /**
+   * Clear the old timeout
+   */
+  if (timeout) {
+    clearTimeout(timeout);
+    timeout = undefined;
+  }
 
   /**
    * Based on updated API, calls are made until a proper result is returned
@@ -367,6 +374,7 @@ async function aqiCall(lat, lng, placeName) {
       }
     })).data;
   }
+
 
   /**
    * Store the data for offline usage using localForage
@@ -514,6 +522,20 @@ async function aqiCall(lat, lng, placeName) {
   .catch(function(err) {
     console.log(err);
   });
+
+
+
+  /**
+   * Update the data after 15 seconds
+  */
+  timeout = setTimeout(function() {
+    var initZoom = map.getZoom();
+
+    map.setZoom(initZoom - 3);
+    aqiCall(lat, lng, placeName).then(function() {
+      map.setZoom(initZoom);
+    })
+  }, 15000);
 }
 
 /**
