@@ -208,6 +208,7 @@ function _renderDOM(data) {
 
   var timeObserved = document.getElementById('timeObserved');
   var locObserved = document.getElementById('locObserved');
+  var attribution = document.getElementById('attribution');
   var mainHealthMessage = document.getElementById('mainHealthMessage');
   var healthMessageOtherToday = document.getElementById('healthMessageOtherToday');
 
@@ -216,22 +217,23 @@ function _renderDOM(data) {
   badgeMainOtherToday.classList = [];
   badgeMainOtherToday.classList.add('badge', 'small');
 
-  var aqi = data.data.aqi;
-  var time = new Date(data.data.time.v);
+  data = data.data;
+  var aqi = data.aqi;
+  var time = new Date(data.time.v);
 
   /**
    * Add each pollutants level to the DOM
    */
-  for (var poll in data.data.iaqi) {
-    if (data.data.iaqi.hasOwnProperty(poll) && _getTitle(poll)) {
+  for (var poll in data.iaqi) {
+    if (data.iaqi.hasOwnProperty(poll) && _getTitle(poll)) {
       var column = document.createElement('div');
       column.classList.add('column');
 
       var badge = document.createElement('div');
-      badge.classList.add('badge', 'smallest', _aqiStatus(data.data.iaqi[poll].v));
-      badge.innerText = Math.round(data.data.iaqi[poll].v*10)/10;
+      badge.classList.add('badge', 'smallest', _aqiStatus(data.iaqi[poll].v));
+      badge.innerText = Math.round(data.iaqi[poll].v*10)/10;
 
-      if (data.data.dominentpol == poll)
+      if (data.dominentpol == poll)
         badge.classList.add('dominant');
 
       var title = document.createElement('div');
@@ -242,7 +244,7 @@ function _renderDOM(data) {
       column.appendChild(title);
       containerPollutants.appendChild(column);
 
-      if (data.data.dominentpol == poll || contPollutantsToday.children.length == 0)
+      if (data.dominentpol == poll || contPollutantsToday.children.length == 0)
         contPollutantsToday.appendChild(column.cloneNode(true));
     }
   }
@@ -267,19 +269,25 @@ function _renderDOM(data) {
 
   healthMessageOtherToday.innerText = mainHealthMessage.innerText;
 
-  // badgeOzone.innerText = o3;
-  // badgeOzoneOtherToday.innerText = o3;
-  // badgeOzone.classList.add(_aqiStatus(o3));
-  // badgeOzoneOtherToday.classList.add(_aqiStatus(o3));
-  //
-  // badgePM.innerText = pm;
-  // badgePMOtherToday.innerText = pm;
-  // badgePM.classList.add(_aqiStatus(pm));
-  // badgePMOtherToday.classList.add(_aqiStatus(pm));
+  /*
+  badgeOzone.innerText = o3;
+  badgeOzoneOtherToday.innerText = o3;
+  badgeOzone.classList.add(_aqiStatus(o3));
+  badgeOzoneOtherToday.classList.add(_aqiStatus(o3));
+  
+  badgePM.innerText = pm;
+  badgePMOtherToday.innerText = pm;
+  badgePM.classList.add(_aqiStatus(pm));
+  badgePMOtherToday.classList.add(_aqiStatus(pm));
+  */
 
   timeObserved.innerText = time.getHours() + ':' + time.getMinutes();
 
-  locObserved.innerText = Math.round(data.data.city.distance/1000)+'km - '+data.data.city.name;
+  locObserved.innerText = Math.round(data.city.distance/1000)+'km - ' + data.city.name;
+
+  attribution.innerText = data.attributions[0].name;
+  attribution.href = data.attributions[0].url;
+
 }
 
 /**
