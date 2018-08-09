@@ -21,7 +21,7 @@
 </head>
 <body>
 
-  <div class="columns main-container">
+  <main class="columns">
     <div class="column is-5 map">
       <div class="map-controls" id="mapControls">
         <input id="txtMapSearch" spellcheck="false" class="map-search" type="search" placeholder="Search Place">
@@ -68,7 +68,7 @@
       <div class="title">Places visited before</div>
       <ul id="offlinePlaces"></ul>
     </div>
-    <div class="column information">
+    <div class="column is-7 information">
 
       <div class="section">
         <div class="title">Current Conditions</div>
@@ -81,6 +81,7 @@
               <div class="main-title">Air Quality Index (AQI)</div>
               <div class="sub-title">Observed at <span id="timeObserved">16:00 PDT</span></div>
               <div class="sub-title">From <span id="locObserved"></span></div>
+              <a class="is-size-7" id="attribution" href="#" target="_blank"></a>
 
               <div class="health-message">Health: <span class="label" id="mainHealthMessage">None</span></div>
             </div>
@@ -112,10 +113,10 @@
         <div class="title">Air quality Forecast</div>
         <div class="card">
           <div class="columns other-data">
-            <div class="column other-data-today is-block-mobile">
+            <div class="column other-data-today is-block-mobile" style="display: none">
               <div class="day-title">Today</div>
               <div class="columns">
-                <div class="column is-4">
+                <div class="column is-4" style="width: auto">
                   <div class="badge good small" id="badgeMainOtherToday">38</div>
                 </div>
                 <div class="column" style="margin:auto 0;">
@@ -190,23 +191,23 @@
       </div>
 
 
-      <div class="columns footer">
+      <footer class="columns">
         <div class="column">
-            <div class="logo">
-              <img src="resources/images/Breathe Logo With Text.png" alt="">
-            </div>
+            <a href="https://breathe.netlify.com" class="logo">
+              <img src="resources/images/Breathe Logo With Text.png" alt="Breathe">
+            </a>
           </div>
         <div class="column">
           <i class="material-icons">code</i> with <i class="material-icons" style="color: #F16A62; font-size: 20px; top: 5px;">favorite</i> by <a href="http://www.blenderskool.cf" target="_blank">Akash Hamirwasia</a>
         </div>
       </div>
-    </div>
+    </footer>
 
     <div class="has-background-dark has-text-light snack-bar">
       <span id="snackMessage">Hello World</span>
       <div class="button is-dark sw-update" id="btnSwUpdate">Update</div>
     </div>
-  </div>
+  </main>
 
   <beacon-app key="6nQ9VvEYFRDGpOdJ2RAj" pos="right"></beacon-app>
   <script src="https://beacon-tool.firebaseapp.com/b.js"></script>
