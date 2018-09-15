@@ -220,6 +220,7 @@ function _renderDOM(data) {
   data = data.data;
   var aqi = data.aqi;
   var time = new Date(data.time.v);
+  var aqiTitle = _aqiStatus(aqi);
 
   /**
    * Add each pollutants level to the DOM
@@ -251,8 +252,8 @@ function _renderDOM(data) {
 
   badgeMain.innerText = aqi;
   badgeMainOtherToday.innerText = aqi;
-  badgeMain.classList.add(_aqiStatus(aqi));
-  badgeMainOtherToday.classList.add(_aqiStatus(aqi));
+  badgeMain.classList.add(aqiTitle);
+  badgeMainOtherToday.classList.add(aqiTitle);
 
   if (aqi <= 50)
     mainHealthMessage.innerText = 'No Risk, enjoy your day';
@@ -288,23 +289,34 @@ function _renderDOM(data) {
   attribution.innerText = data.attributions[0].name;
   attribution.href = data.attributions[0].url;
 
+  /**
+   * Update the legend data
+   */
+  var btnLegend = document.getElementById('expand-legend');
+  var text = btnLegend.getElementsByTagName('div')[0];
+  var aqiColor = _getStrokeColor(aqi);
+
+  btnLegend.getElementsByTagName('span')[0].style.background = aqiColor;
+  text.style.color = aqiColor;
+  text.innerText = _aqiStatus(aqi, true);
+
 }
 
 /**
  * Returns the class name based on aqi level
  * This is used in css to render different colors for every aqi level
  */
-function _aqiStatus(aqi) {
+function _aqiStatus(aqi, short) {
   if (aqi <= 50)
     return 'good';
   else if (aqi <= 100)
     return 'moderate';
   else if (aqi <=  150)
-    return 'unhealthy-moderate';
+    return short ? 'USG' : 'unhealthy-moderate';
   else if (aqi <= 200)
     return 'unhealthy';
   else if (aqi <= 300)
-    return 'very-unhealthy';
+    return short ? 'VU' : 'very-unhealthy';
   else
     return 'hazardous';
 }
@@ -614,3 +626,17 @@ function _showOfflinePlaces() {
   // Show the container
   list.parentElement.style.display = 'block';
 }
+
+
+var btnLegend = document.getElementById('expand-legend');
+btnLegend.addEventListener('click', function() {
+  var values = document.getElementById('aqi-values');
+  var display = values.style.display;
+
+  values.style.display = display === 'block' ? 'none' : 'block';
+
+  var icon = btnLegend.getElementsByTagName('i')[0];
+
+  icon.innerText = icon.innerText === 'expand_less' ? 'expand_more' : 'expand_less';
+  
+});

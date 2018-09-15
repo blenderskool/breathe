@@ -28,40 +28,39 @@
         <div class="maps-custom-item" id="customMapItems"><i class="material-icons">home</i>Add Home</div>
       </div>
       <div id="map"></div>
-      <!--
-      <div class="columns is-flex-mobile aqi-range">
-        <div class="column">Good</div>
-        <div class="column">Moderate</div>
-        <div class="column">USG</div>
-        <div class="column">Unhealthy</div>
-        <div class="column">VU</div>
-        <div class="column">Hazardous</div>
-      </div>-->
-      <div class="aqi-range-new">
-        <div class="division" style="color: #0ACD47;">
-          <div class="color" style="background: #0ACD47;"></div>
-          Good
+
+      <div class="aqi-range">
+        <div class="active" id="expand-legend">
+          <span style="background: #0ACD47"></span>
+          <div>Ok</div>
+          <i class="material-icons" style="margin-left: auto; color: #aaa">expand_less</i>
         </div>
-        <div class="division" style="color: #F5DB2A;">
-          <div class="color" style="background: #F5DB2A;"></div>
-          Moderate
-        </div>
-        <div class="division" style="color: #F99846;">
-          <div class="color" style="background: #F99846;"></div>
-          USG
-        </div>
-        <div class="division" style="color: #F16A62;">
-          <div class="color" style="background: #F16A62;"></div>
-          Unhealthy
-        </div>
-        <div class="division" style="color: #80518E;">
-          <div class="color" style="background: #80518E;"></div>
-          VU
-        </div>
-        <div class="division" style="color: #6B1C31;">
-          <div class="color" style="background: #6B1C31;"></div>
-          Hazardous
-        </div>
+        <ul id="aqi-values">
+          <li style="color: #0ACD47">
+            <span style="background: #0ACD47"></span>
+            Good
+          </li>
+          <li style="color: #F5DB2A">
+            <span style="background: #F5DB2A"></span>
+            Moderate
+          </li>
+          <li style="color: #F99846">
+            <span style="background: #F99846"></span>
+            USG
+          </li>
+          <li style="color: #F16A62">
+            <span style="background: #F16A62"></span>
+            Unhealthy
+          </li>
+          <li style="color: #80518E">
+            <span style="background: #80518E"></span>
+            VU
+          </li>
+          <li style="color: #6B1C31">
+            <span style="background: #6B1C31"></span>
+            Hazardous
+          </li>
+        </ul>
       </div>
     </div>
     <div class="column is-5 offline-places">
