@@ -129,11 +129,11 @@ function initGMap() {
 
   // Runs at the start of the app
   google.maps.event.addListenerOnce(map, 'idle', function() {
-    axios.get('https://geoip.nekudo.com/api/')
+    axios.get('https://ipinfo.io/?token=7eed22252c7672')
     .then(function(response) {
-      var location = response.data.location;
-      map.setCenter(new google.maps.LatLng(location.latitude, location.longitude))
-      aqiCall(location.latitude, location.longitude, 'ip');
+      var location = response.data.loc.split(',');
+      map.setCenter(new google.maps.LatLng(location[0], location[1]))
+      aqiCall(location[0], location[1], 'ip');
     })
     .catch(function(err) {
       console.log(err);
