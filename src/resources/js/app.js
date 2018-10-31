@@ -5,33 +5,31 @@ function _registerServiceWorker() {
   if (!navigator.serviceWorker) return;
 
   navigator.serviceWorker.register('/sw.js')
-  .then(function(reg) {
+  .then(reg => {
     if (!navigator.serviceWorker.controller) return;
 
     if (reg.waiting) {
       _showSnackBar('Get latest improvements');
-      _initSWUpdateBtn(reg.waiting);
-      return;
+      return _initSWUpdateBtn(reg.waiting);
     }
 
     if (reg.installing) {
-      _trackInstalling(reg.installing);
-      return;
+      return _trackInstalling(reg.installing);
     }
 
-    reg.addEventListener('updatefound', function() {
+    reg.addEventListener('updatefound', () => {
       _trackInstalling(reg.installing);
     });
   })
-  .catch(function(err) {
+  .catch(err => {
     console.log(err);
   });
 
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
     window.location.reload();
   });
 
-  navigator.serviceWorker.addEventListener('message', function(event) {
+  navigator.serviceWorker.addEventListener('message', event => {
     /**
      * If Maps API was not available then there is no network connection, hence
      * hide the Maps container and make app usable for offline users.
@@ -44,11 +42,11 @@ function _registerServiceWorker() {
      */
     else if (event.data.message === 'ipoffline') {
       localforage.getItem('ip')
-      .then(function(data) {
-        var geo = data.apiData.data.city.geo;
+      .then(data => {
+        const geo = data.apiData.data.city.geo;
         aqiCall(geo[0], geo[1], 'ip');
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
       });
     }
@@ -57,7 +55,7 @@ function _registerServiceWorker() {
 _registerServiceWorker();
 
 function _trackInstalling(worker) {
-  worker.addEventListener('statechange', function() {
+  worker.addEventListener('statechange', () => {
     if (worker.state === 'installed') {
       _showSnackBar('Get latest improvements');
       _initSWUpdateBtn(worker);
@@ -65,9 +63,9 @@ function _trackInstalling(worker) {
   });
 }
 
-var map, initZoom, timeout;
-var unionPoly;
-var distances = [];
+let map, initZoom, timeout;
+let unionPoly;
+let distances = [];
 
 // Initializes the Google Maps
 function initGMap() {
@@ -128,25 +126,25 @@ function initGMap() {
   });
 
   // Runs at the start of the app
-  google.maps.event.addListenerOnce(map, 'idle', function() {
+  google.maps.event.addListenerOnce(map, 'idle', () => {
     axios.get('https://ipinfo.io/?token=7eed22252c7672')
-    .then(function(response) {
-      var location = response.data.loc.split(',');
+    .then(response => {
+      const location = response.data.loc.split(',');
       map.setCenter(new google.maps.LatLng(location[0], location[1]))
       aqiCall(location[0], location[1], 'ip');
     })
-    .catch(function(err) {
+    .catch(err => {
       console.log(err);
     })
   });
 
   // Create the search box and link it to the UI element.
-  var input = document.getElementById('txtMapSearch');
-  var searchBox = new google.maps.places.SearchBox(input);
+  const input = document.getElementById('txtMapSearch');
+  const searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('mapControls'));
 
   // Bias the SearchBox results towards current map's viewport.
-  map.addListener('bounds_changed', function() {
+  map.addListener('bounds_changed', () => {
     searchBox.setBounds(map.getBounds());
   });
 
@@ -154,19 +152,18 @@ function initGMap() {
    * Listen for the event fired when the user selects a prediction and retrieve
    * more details for that place.
    */
-  searchBox.addListener('places_changed', function() {
-    var places = searchBox.getPlaces();
+  searchBox.addListener('places_changed', () => {
+    const places = searchBox.getPlaces();
 
     if (places.length == 0) {
       return;
     }
 
     // For each place, get the icon, name and location.
-    var bounds = new google.maps.LatLngBounds();
-    places.forEach(function(place) {
+    const bounds = new google.maps.LatLngBounds();
+    places.forEach(place => {
       if (!place.geometry) {
-        console.log("Returned place contains no geometry");
-        return;
+        return console.log("Returned place contains no geometry");
       }
 
       if (place.geometry.viewport) {
@@ -183,7 +180,7 @@ function initGMap() {
       map.fitBounds(bounds);
       initZoom = map.getZoom();
       map.setZoom(initZoom - 3);
-      aqiCall(place.geometry.location.lat(), place.geometry.location.lng()).then(function() {
+      aqiCall(place.geometry.location.lat(), place.geometry.location.lng()).then(() => {
         map.setZoom(initZoom);
       });
     });
@@ -196,21 +193,23 @@ function _renderDOM(data) {
   if (data.status == 'nope' || data.status == 'error')
     return;
 
-  var badgeMain = document.getElementById('badgeMain');
-  var badgeMainOtherToday = document.getElementById('badgeMainOtherToday');
-  var containerPollutants = document.getElementById('pollutantDetails');
-  var contPollutantsToday = document.getElementById('pollutantDetailsToday');
+  const badgeMain = document.getElementById('badgeMain');
+  const badgeMainOtherToday = document.getElementById('badgeMainOtherToday');
+  const containerPollutants = document.getElementById('pollutantDetails');
+  const contPollutantsToday = document.getElementById('pollutantDetailsToday');
   containerPollutants.innerHTML = '';
   contPollutantsToday.innerHTML = '';
 
-  var badgeOzoneOtherToday = document.getElementById('badgeOzoneOtherToday');
-  var badgePMOtherToday = document.getElementById('badgePMOtherToday');
+  /*
+  const badgeOzoneOtherToday = document.getElementById('badgeOzoneOtherToday');
+  const badgePMOtherToday = document.getElementById('badgePMOtherToday');
+  */
 
-  var timeObserved = document.getElementById('timeObserved');
-  var locObserved = document.getElementById('locObserved');
-  var attribution = document.getElementById('attribution');
-  var mainHealthMessage = document.getElementById('mainHealthMessage');
-  var healthMessageOtherToday = document.getElementById('healthMessageOtherToday');
+  const timeObserved = document.getElementById('timeObserved');
+  const locObserved = document.getElementById('locObserved');
+  const attribution = document.getElementById('attribution');
+  const mainHealthMessage = document.getElementById('mainHealthMessage');
+  const healthMessageOtherToday = document.getElementById('healthMessageOtherToday');
 
   badgeMain.classList = [];
   badgeMain.classList.add('badge');
@@ -218,26 +217,26 @@ function _renderDOM(data) {
   badgeMainOtherToday.classList.add('badge', 'small');
 
   data = data.data;
-  var aqi = data.aqi;
-  var time = new Date(data.time.v);
-  var aqiTitle = _aqiStatus(aqi);
+  const aqi = data.aqi;
+  const time = new Date(data.time.v);
+  const aqiTitle = _aqiStatus(aqi);
 
   /**
    * Add each pollutants level to the DOM
    */
-  for (var poll in data.iaqi) {
+  for (let poll in data.iaqi) {
     if (data.iaqi.hasOwnProperty(poll) && _getTitle(poll)) {
-      var column = document.createElement('div');
+      const column = document.createElement('div');
       column.classList.add('column');
 
-      var badge = document.createElement('div');
+      const badge = document.createElement('div');
       badge.classList.add('badge', 'smallest', _aqiStatus(data.iaqi[poll].v));
       badge.innerText = Math.round(data.iaqi[poll].v*10)/10;
 
       if (data.dominentpol == poll)
         badge.classList.add('dominant');
 
-      var title = document.createElement('div');
+      const title = document.createElement('div');
       title.classList.add('main-title');
       title.innerText = _getTitle(poll);
 
@@ -292,9 +291,9 @@ function _renderDOM(data) {
   /**
    * Update the legend data
    */
-  var btnLegend = document.getElementById('expand-legend');
-  var text = btnLegend.getElementsByTagName('div')[0];
-  var aqiColor = _getStrokeColor(aqi);
+  const btnLegend = document.getElementById('expand-legend');
+  const text = btnLegend.getElementsByTagName('div')[0];
+  const aqiColor = _getStrokeColor(aqi);
 
   btnLegend.getElementsByTagName('span')[0].style.background = aqiColor;
   text.style.color = aqiColor;
@@ -367,10 +366,10 @@ function _getTitle(shortname) {
  * to the DOM
  */
 async function aqiCall(lat, lng, placeName) {
-  var coordsCurrent = new google.maps.LatLng(lat, lng);
-  var txtMapSearch = document.getElementById('txtMapSearch');
-  var apiData = {status: ''};
-  var placeName = placeName ? placeName : txtMapSearch.value;
+  const coordsCurrent = new google.maps.LatLng(lat, lng);
+  const txtMapSearch = document.getElementById('txtMapSearch');
+  let apiData = {status: ''};
+  placeName = placeName ? placeName : txtMapSearch.value;
 
   /**
    * Clear the old timeout
@@ -406,22 +405,22 @@ async function aqiCall(lat, lng, placeName) {
     time: new Date(),
     key: placeName
   })
-  .then(function() {
+  .then(() => {
     return localforage.keys();
   })
-  .then(function(keys) {
+  .then(keys => {
     if (keys.length < 30) return;
 
     return Promise.all(
-      keys.map(function(key) {
+      keys.map(key => {
         return localforage.getItem(key)
       })
     );
   })
-  .then(function(storedData) {
+  .then(storedData => {
     if (!storedData) return;
 
-    storedData.sort(function(a, b) {
+    storedData.sort((a, b) => {
       return new Date(b.time) - new Date(a.time);
     });
 
@@ -430,22 +429,22 @@ async function aqiCall(lat, lng, placeName) {
 
     // Clear the old data, and store the new array of data
     localforage.clear()
-    .then(function() {
-      storedData.forEach(function(data) {
+    .then(() => {
+      storedData.forEach(data => {
         localforage.setItem(data.key, data);
       });
     })
-    .catch(function(err) {
+    .catch(err => {
       console.log(err);
     })
   })
-  .catch(function(err) {
+  .catch(err => {
     console.log(err);
   });
 
   // Calculate the distance of the place and add it to the API data
   if (!apiData.data.city.distance) {
-    var stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
+    const stationCoords = new google.maps.LatLng(apiData.data.city.geo[0], apiData.data.city.geo[1]);
     apiData.data.city.distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords);
   }
 
@@ -459,16 +458,16 @@ async function aqiCall(lat, lng, placeName) {
   /** AQI chart rendering */
 
   // Bounds of the map which are displayed on the screen
-  var bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
+  const bounds = map.getBounds().getSouthWest().lat()+','+map.getBounds().getSouthWest().lng()+','+map.getBounds().getNorthEast().lat()+','+map.getBounds().getNorthEast().lng();
 
   /**
    * Get additional data from the API using the bounds that we get above
    * to get centers near the point and generate the air quality view on the map
    */
   axios.get('https://api.waqi.info/map/bounds/?latlng='+bounds+'&token=157ae3a4ea08e71b5d0e6ed5096fbe6a90a01e0d')
-  .then(function(response) {
-    var mapData = response.data;
-    var geometryFactory = new jsts.geom.GeometryFactory();
+  .then(response => {
+    const mapData = response.data;
+    const geometryFactory = new jsts.geom.GeometryFactory();
 
     if (unionPoly)
       unionPoly.setMap(null);
@@ -478,13 +477,13 @@ async function aqiCall(lat, lng, placeName) {
      * aqi centre and the point at which the user wants aqi
      */
     distances = [];
-    for (var i=0; i < mapData.data.length; i++) {
+    for (let i=0; i < mapData.data.length; i++) {
       if (mapData.data[i].aqi == '-')
         continue;
-      var stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon);
+      const stationCoords = new google.maps.LatLng(mapData.data[i].lat, mapData.data[i].lon);
 
       // Add 1000m to the exact distance calculated
-      var distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+1000;
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(coordsCurrent, stationCoords)+1000;
 
       // Distances greater than 20km would not be rendered in the map
       if (distance > 20000) continue;
@@ -497,18 +496,18 @@ async function aqiCall(lat, lng, placeName) {
     }
 
     // Sort the distances
-    distances.sort(function(a,b) {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
+    distances.sort((a,b) => {return (a.distance < b.distance) ? 1 : ((b.distance < a.distance) ? -1 : 0);});
 
-    var JSTSpoly = [];
-    var JSTSpolyUnion;
+    const JSTSpoly = [];
+    let JSTSpolyUnion;
 
-    for (var i=0; i < distances.length; i++) {
+    for (let i=0; i < distances.length; i++) {
       // Only first 5 centre data is taken to keep processing simple
       if (i == 5)
         break;
 
       // Generate a circle based on centre, radius, number of points
-      var shape = new google.maps.Polygon({
+      const shape = new google.maps.Polygon({
         paths: getCirclePoints(distances[i].coords, distances[i].distance, 80, true)
       });
 
@@ -525,7 +524,7 @@ async function aqiCall(lat, lng, placeName) {
         JSTSpolyUnion = JSTSpolyUnion.union(JSTSpoly[i]);
     }
 
-    var outputPath = jsts2googleMaps(JSTSpolyUnion); // Return the final polygon to be rendered
+    const outputPath = jsts2googleMaps(JSTSpolyUnion); // Return the final polygon to be rendered
     unionPoly = new google.maps.Polygon({
       map: map,
       paths: outputPath,
@@ -539,7 +538,7 @@ async function aqiCall(lat, lng, placeName) {
     // Reset the zoom level of the map
     map.setZoom(14);
   })
-  .catch(function(err) {
+  .catch(err => {
     console.log(err);
   });
 
@@ -548,11 +547,11 @@ async function aqiCall(lat, lng, placeName) {
   /**
    * Update the data after 15 seconds
   */
-  timeout = setTimeout(function() {
-    var initZoom = map.getZoom();
+  timeout = setTimeout(() => {
+    const initZoom = map.getZoom();
 
     map.setZoom(initZoom - 3);
-    aqiCall(lat, lng, placeName).then(function() {
+    aqiCall(lat, lng, placeName).then(() => {
       map.setZoom(initZoom);
     })
   }, 15000);
@@ -565,9 +564,9 @@ async function aqiCall(lat, lng, placeName) {
 function _showSnackBar(message, time) {
   if (!message) return;
 
-  var snackBar = document.querySelector('.snack-bar');
-  var snackBarMessage = document.getElementById('snackMessage');
-  var themeColor = document.getElementsByTagName('meta')['theme-color'];
+  const snackBar = document.querySelector('.snack-bar');
+  const snackBarMessage = document.getElementById('snackMessage');
+  const themeColor = document.getElementsByTagName('meta')['theme-color'];
 
   snackBarMessage.innerText = message;
   snackBar.style.display = 'flex';
@@ -575,7 +574,7 @@ function _showSnackBar(message, time) {
 
   /** Close the snackbar if time is specified */
   if (time) {
-    setTimeout(function() { 
+    setTimeout(() => { 
       snackBar.style.display = 'none';
       snackBarMessage.innerText = '';
       themeColor.content = '#2ad09e';
@@ -590,10 +589,10 @@ function _showSnackBar(message, time) {
 function _initSWUpdateBtn(worker) {
   if (!worker) return;
 
-  var btn = document.getElementById('btnSwUpdate');
+  const btn = document.getElementById('btnSwUpdate');
 
   btn.style.display = 'inline-flex';
-  btn.addEventListener('click', function() {
+  btn.addEventListener('click', () => {
     worker.postMessage({ action: 'skipWaiting' });
   });
 }
@@ -604,19 +603,19 @@ function _initSWUpdateBtn(worker) {
  */
 function _showOfflinePlaces() {
   // Hide the maps
-  var mapsRef = document.querySelector('.map');
+  const mapsRef = document.querySelector('.map');
   mapsRef.style.display = 'none';
 
-  var list = document.getElementById('offlinePlaces');
+  const list = document.getElementById('offlinePlaces');
   list.innerHTML = '';
-  localforage.iterate(function(data, key) {
+  localforage.iterate((data, key) => {
     if (!key || key === 'ip') return;
 
-    var place = document.createElement('li');
+    const place = document.createElement('li');
     place.innerText = key;
     place.classList.add('card');
-    place.addEventListener('click', function() {
-      var geo = data.apiData.data.city.geo;
+    place.addEventListener('click', () => {
+      const geo = data.apiData.data.city.geo;
       aqiCall(geo[0], geo[1], key);
     });
 
@@ -628,14 +627,14 @@ function _showOfflinePlaces() {
 }
 
 
-var btnLegend = document.getElementById('expand-legend');
-btnLegend.addEventListener('click', function() {
-  var values = document.getElementById('aqi-values');
-  var display = values.style.display;
+const btnLegend = document.getElementById('expand-legend');
+btnLegend.addEventListener('click', () => {
+  const values = document.getElementById('aqi-values');
+  const display = values.style.display;
 
   values.style.display = display === 'block' ? 'none' : 'block';
 
-  var icon = btnLegend.getElementsByTagName('i')[0];
+  const icon = btnLegend.getElementsByTagName('i')[0];
 
   icon.innerText = icon.innerText === 'expand_less' ? 'expand_more' : 'expand_less';
   
