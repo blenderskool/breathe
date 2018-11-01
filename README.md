@@ -19,3 +19,13 @@ Technologies used:
 
 
 Site is live at: https://breathe.netlify.com
+
+## Development
+Breathe works with latest LTS version of Node.js for development. The build process is written on Gulp. Babel is used to use ES6 features, along with SASS pre-processor for CSS.
+
+```bash
+git clone https://github.com/blenderskool/breathe.git
+cd breathe
+npm install
+npm run dev
+```

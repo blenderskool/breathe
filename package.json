@@ -4,7 +4,9 @@
   "description": "Air quality data of any place in a very minimal UI",
   "main": "index.js",
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "dev": "node index",
+    "start": "npm run dev"
   },
   "repository": {
     "type": "git",

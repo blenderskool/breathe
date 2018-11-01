@@ -56,3 +56,10 @@ gulp.task('html', function() {
  * Default task that builds the entire project
  */
 gulp.task('default', ['static', 'styles', 'scripts', 'html']);
+
+/**
+ * File watcher
+ */
+gulp.task('dev', function() {
+  gulp.watch('src/**/*', ['default']);
+});
