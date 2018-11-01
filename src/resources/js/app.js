@@ -1,7 +1,8 @@
 /**
- * Service Worker registration
+ * Service worker registration
  */
-function _registerServiceWorker() {
+(function() {
+
   if (!navigator.serviceWorker) return;
 
   navigator.serviceWorker.register('/sw.js')
@@ -50,9 +51,9 @@ function _registerServiceWorker() {
         console.log(err);
       });
     }
-  })
-}
-_registerServiceWorker();
+  });
+
+})();
 
 function _trackInstalling(worker) {
   worker.addEventListener('statechange', () => {
@@ -80,50 +81,63 @@ function initGMap() {
     fullscreenControl: false,
     styles: [
       {
-        "featureType": "poi.business",
-        "stylers": [
+        featureType: "poi.business",
+        stylers: [
           {
-            "visibility": "off"
+            visibility: "off"
           }
         ]
       },
       {
-        "featureType": "poi.park",
-        "elementType": "labels.text",
-        "stylers": [
+        featureType: "poi.park",
+        elementType: "labels.text",
+        stylers: [
           {
-            "visibility": "off"
+            visibility: "off"
           }
         ]
       },
       {
-        "featureType": "road.arterial",
-        "elementType": "labels",
-        "stylers": [
+        featureType: "road.arterial",
+        elementType: "labels",
+        stylers: [
           {
-            "visibility": "off"
+            visibility: "off"
           }
         ]
       },
       {
-        "featureType": "road.highway",
-        "elementType": "labels",
-        "stylers": [
+        featureType: "road.highway",
+        elementType: "labels",
+        stylers: [
           {
-            "visibility": "off"
+            visibility: "off"
           }
         ]
       },
       {
-        "featureType": "road.local",
-        "stylers": [
+        featureType: "road.local",
+        stylers: [
           {
-            "visibility": "off"
+            visibility: "off"
           }
         ]
       }
     ]
   });
+
+  /**
+   * Dark theme status is obtained
+   */
+
+  localforage.getItem('isDark')
+  .then(isDark => {
+    if (isDark) toggleDark();
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
 
   // Runs at the start of the app
   google.maps.event.addListenerOnce(map, 'idle', () => {
@@ -639,3 +653,151 @@ btnLegend.addEventListener('click', () => {
   icon.innerText = icon.innerText === 'expand_less' ? 'expand_more' : 'expand_less';
   
 });
+
+
+/**
+ * Toggles the dark theme of the app
+ */
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  if (!map) return;
+
+  if (isDark) {
+    map.setOptions({
+      styles: [
+        {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+        {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+        {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+        {
+          featureType: 'administrative.locality',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#71717f'}]
+        },
+        {
+          featureType: 'poi',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#71717f'}]
+        },
+        {
+          featureType: 'poi.park',
+          elementType: 'geometry',
+          stylers: [{color: '#263c3f'}]
+        },
+        {
+          featureType: 'poi.park',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#6b9a76'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'geometry',
+          stylers: [{color: '#38414e'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'geometry.stroke',
+          stylers: [{color: '#212a37'}]
+        },
+        {
+          featureType: 'road',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#9ca5b3'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'geometry',
+          stylers: [{color: '#746855'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'geometry.stroke',
+          stylers: [{color: '#1f2835'}]
+        },
+        {
+          featureType: 'road.highway',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#cacaca'}]
+        },
+        {
+          featureType: 'transit',
+          elementType: 'geometry',
+          stylers: [{color: '#2f3948'}]
+        },
+        {
+          featureType: 'transit.station',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#828288'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'geometry',
+          stylers: [{color: '#17263c'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'labels.text.fill',
+          stylers: [{color: '#515c6d'}]
+        },
+        {
+          featureType: 'water',
+          elementType: 'labels.text.stroke',
+          stylers: [{color: '#17263c'}]
+        },
+        ...map.styles
+      ]
+    });
+  }
+  else {
+    map.setOptions({
+      styles: [
+        {
+          featureType: "poi.business",
+          stylers: [
+            {
+              visibility: "off"
+            }
+          ]
+        },
+        {
+          featureType: "poi.park",
+          elementType: "labels.text",
+          stylers: [
+            {
+              visibility: "off"
+            }
+          ]
+        },
+        {
+          featureType: "road.arterial",
+          elementType: "labels",
+          stylers: [
+            {
+              visibility: "off"
+            }
+          ]
+        },
+        {
+          featureType: "road.highway",
+          elementType: "labels",
+          stylers: [
+            {
+              visibility: "off"
+            }
+          ]
+        },
+        {
+          featureType: "road.local",
+          stylers: [
+            {
+              visibility: "off"
+            }
+          ]
+        }
+      ]
+    });
+  }
+
+  // Store the dark theme status for next visit
+  localforage.setItem('isDark', isDark);
+
+}
