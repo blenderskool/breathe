@@ -1,10 +1,30 @@
+// Standard colors
+$white: #fff;
+$black: #000;
+$primary: #2ad09e;
+$text: #bdbdc6;
+
+$shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+
+// AQI status colors
+$good: #0ACD47;
+$moderate: #F5DB2A;
+$u-moderate: #F99846;
+$unhealthy: #F16A62;
+$v-unhealthy: #80518E;
+$hazardous: #972b48;
+
+
 hr {
   height: 1px;
 }
 
+body, .map-search {
+  font-family: 'Poppins', sans-serif;
+}
+
 main {
   margin: 0 !important;
-  font-family: 'Poppins', sans-serif;
 
   .details {
     position: relative;
@@ -33,12 +53,11 @@ main {
         outline: none;
         border: none;
         opacity: 0.8;
-        background-color: white;
+        background-color: $white;
         color: #4a4a4a;
-        font-family: 'Poppins', sans-serif;
         font-weight: 500;
         border-radius: 0.2rem;
-        box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: $shadow;
 
         user-select: none;
         transition: all 0.3s ease;
@@ -72,8 +91,8 @@ main {
 
 
       .maps-custom-item {
-        background-color: #FFFFFF;
-        color: #000000;
+        background-color: $white;
+        color: $black;
         font-size: 14px;
         font-weight: 500;
         padding: 12px 10px 12px 10px;
@@ -102,7 +121,7 @@ main {
 
   .offline-places {
     display: none;
-    background-color: #2ad09e;
+    background-color: $primary;
     padding: 20px 30px;
     overflow: auto;
     position: fixed;
@@ -112,7 +131,7 @@ main {
 
     .title {
       padding-top: 2rem;
-      color: #FFFFFF;  
+      color: $white;  
     }
 
     ul li {
@@ -136,12 +155,12 @@ main {
     text-transform: uppercase;
     font-weight: 500;
     font-size: 1.5rem;
-    color: #BDBDC6;
+    color: $text;
   }
 
   .information {
     background-color: #F6F6F8;
-    border-left: 5px solid #FFFFFF;
+    border-left: 5px solid $white;
     padding: 20px 30px;
     margin-left: auto;
 
@@ -153,8 +172,8 @@ main {
         padding: 30px;
 
         border-radius: 0.2rem;
-        background-color: #FFFFFF;
-        box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+        background-color: $white;
+        box-shadow: $shadow;
 
 
         .main-title {
@@ -162,7 +181,7 @@ main {
           font-weight: 400;
 
           span {
-            color: #BDBDC6;
+            color: $text;
             font-size: 16px;        
           }
 
@@ -188,7 +207,7 @@ main {
           font-weight: 500;
           border-radius: 0.2rem;
           background-color: #F6F6F8;
-          color: #BDBDC6;
+          color: $text;
 
           margin-left: 5px;
         }
@@ -196,7 +215,7 @@ main {
         .copy {
           font-size: 13px;
           font-weight: 500;
-          color: #BDBDC6;
+          color: $text;
         }
 
         .additional-details {
@@ -229,13 +248,13 @@ main {
             font-size: 14px;
             font-weight: 500;
 
-            color: #BDBDC6;
+            color: $text;
           }
 
           .day-title {
             text-align: right;
             text-transform: uppercase;
-            color: #BDBDC6;
+            color: $text;
             margin-bottom: 15px;
           }
 
@@ -261,22 +280,21 @@ main {
   }
 
   .badge {
-    text-align: center;
     width: 140px;
     height: 140px;
     border-radius: 100%;
-    padding-top: 1.6rem;
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     user-select: none;
 
     font-size: 55px;
-    font-family: 'Poppins', sans-serif;
     font-weight: 300;
 
     &::after {
       font-size: 16px;
-      color: #FFFFFF;
+      color: $white;
       text-align: center;
       text-transform: uppercase;
 
@@ -294,7 +312,6 @@ main {
     &.small {
       width: 90px;
       height: 90px;
-      padding-top: 1.4rem;
       font-weight: 400;
       font-size: 30px;
     
@@ -307,7 +324,6 @@ main {
     &.smallest {
       width: 50px;
       height: 50px;
-      padding-top: 0.7rem;
       font-weight: 400;
       font-size: 20px;
     
@@ -315,72 +331,72 @@ main {
         content: none !important;
       }
     }
+
+
+    &.dominant {
+      border: 2px solid;
+    }
+
   }
 
-
   .good {
-    background-color: #E4FAEB;
-    color: #0ACD47;
+    background-color: rgba($color: $good, $alpha: 0.13);
+    color: $good;
 
     &::after {
       content: 'Good';
-      background-color: #0ACD47;
+      background-color: $good;
     }
   }
 
   .moderate {
-    background-color: #FDF9DD;
-    color: #F5DB2A;
+    background-color: rgba($color: $moderate, $alpha: 0.16);
+    color: $moderate;
 
     &::after {
       content: 'Moderate';
-      background-color: #F5DB2A;
+      background-color: $moderate;
     }
   }
 
   .unhealthy-moderate {
-    background-color: #FFE4CE;
-    color: #F99846;
+    background-color: rgba($color: $u-moderate, $alpha: 0.18);
+    color: $u-moderate;
 
     &::after {
       content: 'USG';
-      background-color: #F99846;
+      background-color: $u-moderate;
     }
   }
 
   .unhealthy {
-    background-color: #FFDFDD;
-    color: #F16A62;
+    background-color: rgba($color: $unhealthy, $alpha: 0.17);
+    color: $unhealthy;
 
     &::after {
       content: 'Unhealthy';
-      background-color: #F16A62;
+      background-color: $unhealthy;
     }
   }
 
   .very-unhealthy {
-    background-color: #EFCFF9;
-    color: #80518E;
+    background-color: rgba(183, 64, 218, 0.22);
+    color: $v-unhealthy;
 
     &::after {
       content: 'VU';
-      background-color: #80518E;
+      background-color: $v-unhealthy;
     }
   }
 
   .hazardous {
-    background-color: #BA6077;
-    color: #6B1C31;
+    background-color: rgba(167, 32, 68, 0.25);
+    color: $hazardous;
 
     &::after {
       content: 'Hazardous';
-      background-color: #6B1C31;
+      background-color: $hazardous;
     }
-  }
-
-  .dominant {
-    border: 2px solid;
-    padding: 0.5rem;
   }
 
   .aqi-range {
@@ -392,7 +408,7 @@ main {
     font-weight: 500;
     padding: 2px 5px;
 
-    background: white;
+    background: $white;
     opacity: 0.8;
     border-radius: 0.2rem;
     user-select: none;
@@ -423,7 +439,7 @@ main {
         height: 12px;
         margin-right: 8px;
         border-radius: 100%;
-        background: black;
+        background: $black;
         display: inline-block;    
       }
 
@@ -443,10 +459,11 @@ main {
 
   .disabled {
     position: relative;
+    user-select: none;
 
     &::after {
       content: 'Coming Soon';
-      color: #BDBDC6;
+      color: $text;
       background-color: rgba(255, 255, 255, 0.85);
       text-align: center;
       font-size: 22px;
@@ -475,7 +492,7 @@ main {
     box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
 
     .sw-update {
-      color: #2ad09e;
+      color: $primary;
       margin-left: auto;
       text-transform: uppercase;
       display: none;  
@@ -487,7 +504,7 @@ main {
 
 .pac-container {
   border-radius: 0rem 0rem 0.2rem 0.2rem;
-  box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: $shadow;
   /*margin-top: 42px;
   border: 0;*/
 }
