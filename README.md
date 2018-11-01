@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/blenderskool/breathe/raw/gh-pages/resources/images/Breathe%20Logo%20With%20Text.png" alt="Breathe app">
+  <img src="https://breathe.netlify.com/resources/images/Breathe%20Logo%20With%20Text.png" alt="Breathe app">
 </p>
 
 Breathe is a **progressive web app(PWA)** that provides you with air quality data for many places in an easy to understand interface.
