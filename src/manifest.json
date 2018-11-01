@@ -3,17 +3,17 @@
     "short_name": "Breathe",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png?v=A0ieifo",
+            "src": "/resources/images/android-chrome-192x192.png?v=A0ieifo",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-256x256.png?v=A0ieifo",
+            "src": "/resources/images/android-chrome-256x256.png?v=A0ieifo",
             "sizes": "256x256",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-512x512.png?v=A0ieifo",
+            "src": "/resources/images/android-chrome-512x512.png?v=A0ieifo",
             "sizes": "512x512",
             "type": "image/png"
         }

@@ -1,0 +1,108 @@
+$dark-bg: #1d1d23;
+$dark-text: #71717f;
+$darkest-bg: #0c0c0e;
+$lightest-text: #cacaca;
+$light-text: #828288;
+
+
+body.dark {
+
+  hr {
+    background-color: $dark-bg;
+  }
+
+  main {
+
+    .map {
+      background-color: $dark-bg;
+
+      .map-controls .map-search {
+        background-color: $darkest-bg;
+        color: $lightest-text;
+
+        &::-webkit-search-cancel-button:hover {
+          background-color: $dark-bg;
+        }
+
+      }
+
+    }
+
+    .aqi-range {
+      background-color: $darkest-bg;
+      
+      .active {
+        background-color: $dark-bg;
+      }
+
+    }
+
+    .information {
+      background-color: $dark-bg;
+      border-left-color: $darkest-bg;
+
+      .section {
+
+        .card {
+          background-color: $darkest-bg;
+
+
+          .main-title {
+            color: $lightest-text;
+          }
+
+          .sub-title, .copy, .health-message {
+            color: $light-text;
+          }
+
+          .health-message .label {
+            background-color: $dark-bg;
+            color: $dark-text;
+          }
+
+        }
+
+      }
+
+    }
+
+    .title {
+      color: $dark-text;
+    }
+
+    .disabled::after {
+      background-color: rgba($color: $darkest-bg, $alpha: 0.8);
+      color: $dark-text;
+    }
+
+  }
+
+
+  .pac-container {
+    background-color: $darkest-bg;
+    border-top-color: $dark-bg;
+
+    .pac-item {
+      color: $light-text;
+
+      &:hover {
+        background-color: $dark-bg;
+      }
+
+      .pac-item-query {
+        color: $lightest-text;
+      }
+
+    }
+
+    .pac-item-selected {
+      background-color: $dark-bg;
+    }
+
+  }
+
+  footer {
+    color: $light-text;
+  }
+
+}

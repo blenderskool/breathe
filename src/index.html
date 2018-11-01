@@ -6,9 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Breathe - Air Quality Index</title>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=A0eyRwzWw5">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=A0eyRwzWw5">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=A0eyRwzWw5">
+  <link rel="apple-touch-icon" sizes="180x180" href="/resources/images/apple-touch-icon.png?v=A0eyRwzWw5">
+  <link rel="icon" type="image/png" sizes="32x32" href="/resources/images/favicon-32x32.png?v=A0eyRwzWw5">
+  <link rel="icon" type="image/png" sizes="16x16" href="/resources/images/favicon-16x16.png?v=A0eyRwzWw5">
   <link rel="manifest" href="/manifest.json?v=A0eyRwzWw5">
   <link rel="shortcut icon" href="/favicon.ico?v=A0eyRwzWw5">
   <meta name="apple-mobile-web-app-title" content="Breathe">
@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css">
   <link rel="stylesheet" href="resources/css/fonts.css">
   <link rel="stylesheet" href="resources/css/styles.css">
+  <link rel="stylesheet" href="resources/css/dark.css">
 </head>
 <body>
 
@@ -56,8 +57,8 @@
             <span style="background: #80518E"></span>
             VU
           </li>
-          <li style="color: #6B1C31">
-            <span style="background: #6B1C31"></span>
+          <li style="color: #972b48">
+            <span style="background: #972b48"></span>
             Hazardous
           </li>
         </ul>
@@ -149,7 +150,7 @@
               </div>
             </div>
             <hr class="is-flex-mobile">
-            <div class="column is-block-mobile disabled">
+            <div class="column is-block-mobile disabled" style="text-align:center">
               <div class="day-title">Tomorrow</div>
               <div class="columns">
                 <div class="column is-4">
@@ -199,8 +200,14 @@
         <div class="column">
           <i class="material-icons">code</i> with <i class="material-icons" style="color: #F16A62; font-size: 20px; top: 5px;">favorite</i> by <a href="http://www.blenderskool.cf" target="_blank">Akash Hamirwasia</a>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
+
+    <div class="dark-toggle" role="button" onclick="toggleDark()">
+      <i class="material-icons">
+        brightness_4
+      </i>
+    </div>
 
     <div class="has-background-dark has-text-light snack-bar">
       <span id="snackMessage">Hello World</span>

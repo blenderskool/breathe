@@ -1,0 +1,36 @@
+{
+  "name": "breathe",
+  "version": "0.5.0",
+  "description": "Air quality data of any place in a very minimal UI",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp",
+    "dev": "node index",
+    "start": "npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blenderskool/breathe.git"
+  },
+  "keywords": [
+    "pwa",
+    "user-interface",
+    "air-quality-data",
+    "google-maps"
+  ],
+  "author": "Akash Hamirwasia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blenderskool/breathe/issues"
+  },
+  "homepage": "https://github.com/blenderskool/breathe#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-minify": "^0.4.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-sass": "^4.0.2"
+  }
+}
