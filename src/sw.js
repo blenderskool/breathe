@@ -10,6 +10,7 @@ self.addEventListener('install', function(event) {
         '/',
         '/resources/css/fonts.css',
         '/resources/css/styles.css',
+        '/resources/css/dark.css',
         '/resources/images/Breathe Logo With Text.png',
         '/resources/images/input-close.svg',
         '/resources/js/app.js',
