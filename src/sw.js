@@ -1,21 +1,18 @@
 // Use LocalForage to store, get data and use it when offline
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.1/localforage.min.js');
 
-var staicCacheName = 'breathe-static-v7';
+var staicCacheName = 'breathe-static-v8';
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staicCacheName).then(function(cache) {
       return cache.addAll([
         '/',
-        '/resources/css/fonts.css',
         '/resources/css/styles.css',
-        '/resources/css/dark.css',
         '/resources/images/Breathe Logo With Text.png',
         '/resources/images/input-close.svg',
         '/resources/js/app.js',
         '/resources/js/utils.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css',
         'https://unpkg.com/axios/dist/axios.min.js',
         'https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.0.2/jsts.min.js',
         'https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLDz8Z1xlFQ.woff2',

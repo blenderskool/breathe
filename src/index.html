@@ -15,20 +15,29 @@
   <meta name="application-name" content="Breathe">
   <meta name="theme-color" content="#2ad09e">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.0/css/bulma.min.css">
-  <link rel="stylesheet" href="resources/css/fonts.css">
+  <link rel="preload" as="style" href="resources/css/styles.css">
+
+  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin="anonymous">
+
   <link rel="stylesheet" href="resources/css/styles.css">
-  <link rel="stylesheet" href="resources/css/dark.css">
 </head>
 <body>
 
   <main class="columns">
     <div class="column is-5 map">
       <div class="map-controls" id="mapControls">
-        <input id="txtMapSearch" spellcheck="false" class="map-search" type="search" placeholder="Search Place">
+        <input
+          id="txtMapSearch"
+          spellcheck="false"
+          class="map-search"
+          type="search"
+          aria-label="Search Place"
+          placeholder="Search Place"
+          tabindex="0"
+        >
         <div class="maps-custom-item" id="customMapItems"><i class="material-icons">home</i>Add Home</div>
       </div>
-      <div id="map"></div>
+      <div id="map" tabindex="0" role="application" aria-label="Map"></div>
 
       <div class="aqi-range">
         <div class="active" id="expand-legend">
@@ -71,7 +80,7 @@
     <div class="column is-7 information">
 
       <div class="section">
-        <div class="title">Current Conditions</div>
+        <h2 class="title">Current Conditions</h2>
         <div class="card main">
           <div class="columns">
             <div class="column is-3 badge-container">
@@ -81,7 +90,7 @@
               <div class="main-title">Air Quality Index (AQI)</div>
               <div class="sub-title">Observed at <span id="timeObserved">16:00 PDT</span></div>
               <div class="sub-title">From <span id="locObserved"></span></div>
-              <a class="is-size-7" id="attribution" href="#" target="_blank"></a>
+              <a class="is-size-7" id="attribution" href="#" target="_blank" rel="noopener"></a>
 
               <div class="health-message">Health: <span class="label" id="mainHealthMessage">None</span></div>
             </div>
@@ -90,7 +99,10 @@
           <div class="copy">
             Note: Values above 500 are considered  Beyond the AQI. Follow recommendations for the
             Hazardous category. Additional information on reducing exposure to extremely high
-            levels of particle pollution <a href="https://airnow.gov/index.cfm?action=aqibasics.pmhilevels" target="_blank">is available here</a>.
+            levels of particle pollution
+            <a href="https://airnow.gov/index.cfm?action=aqibasics.pmhilevels" target="_blank" rel="noopener">
+              is available here
+            </a>.
           </div>
 
           <hr>
@@ -110,7 +122,7 @@
       </div>
 
       <div class="section">
-        <div class="title">Air quality Forecast</div>
+        <h2 class="title">Air quality Forecast</h2>
         <div class="card">
           <div class="columns other-data">
             <div class="column other-data-today is-block-mobile" style="display: none">
@@ -125,7 +137,7 @@
                 </div>
               </div>
               <hr class="is-hidden-mobile">
-              <div class="day-title">AQI Pollutant Details</div>
+              <h3 class="day-title">AQI Pollutant Details</h3>
               <div class="columns" id="pollutantDetailsToday">
                 <div class="column">
                   <div class="columns">
@@ -162,7 +174,7 @@
                 </div>
               </div>
               <hr class="is-hidden-mobile">
-              <div class="day-title">AQI Pollutant Details</div>
+              <h3 class="day-title">AQI Pollutant Details</h3>
               <div class="columns">
                 <div class="column">
                   <div class="columns">
@@ -193,12 +205,16 @@
 
       <footer class="columns">
         <div class="column">
-            <a href="https://breathe.netlify.com" class="logo">
+            <a href="/" class="logo">
               <img src="resources/images/Breathe Logo With Text.png" alt="Breathe">
             </a>
           </div>
         <div class="column">
-          <i class="material-icons">code</i> with <i class="material-icons" style="color: #F16A62; font-size: 20px; top: 5px;">favorite</i> by <a href="http://www.blenderskool.cf" target="_blank">Akash Hamirwasia</a>
+          <i class="material-icons">code</i> with <i class="material-icons" style="color: #F16A62; font-size: 20px; top: 5px;">favorite</i>
+          by
+          <a href="https://github.com/blenderskool" target="_blank" rel="noopener">
+            Akash Hamirwasia
+          </a>
         </div>
       </footer>
     </div>
@@ -216,13 +232,13 @@
   </main>
 
   <beacon-app key="6nQ9VvEYFRDGpOdJ2RAj" pos="right"></beacon-app>
-  <script src="https://beacon-tool.firebaseapp.com/b.js"></script>
+  <script async src="https://beacon-tool.firebaseapp.com/b.js"></script>
 
-  <script src="https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.0.2/jsts.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.1/localforage.min.js"></script>
-  <script src="resources/js/app.js" charset="utf-8"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places,geometry&callback=initGMap"></script>
-  <script src="resources/js/utils.js" charset="utf-8"></script>
+  <script defer src="https://cdn.rawgit.com/bjornharrtell/jsts/gh-pages/1.0.2/jsts.min.js"></script>
+  <script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.1/localforage.min.js"></script>
+  <script defer src="resources/js/app.js" charset="utf-8"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTndHHpQmEphfgmNbw3q6kdsmVWjGTjp4&libraries=places,geometry&callback=initGMap"></script>
+  <script defer src="resources/js/utils.js" charset="utf-8"></script>
 </body>
 </html>
