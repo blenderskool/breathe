@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const htmlmin = require('gulp-htmlmin');
 const babel = require('gulp-babel');
+const concat = require('gulp-concat');
 
 
 /**
@@ -10,6 +11,7 @@ const babel = require('gulp-babel');
 gulp.task('styles', function() {
   gulp.src('src/resources/scss/**/*.scss')
     .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(concat('styles.css'))
     .pipe(gulp.dest('dist/resources/css'));
 });
 
