@@ -1,7 +1,7 @@
 // Use LocalForage to store, get data and use it when offline
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.1/localforage.min.js');
 
-var staicCacheName = 'breathe-static-v8';
+var staicCacheName = 'breathe-static-v9';
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
