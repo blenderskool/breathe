@@ -141,7 +141,7 @@ function initGMap() {
 
   // Runs at the start of the app
   google.maps.event.addListenerOnce(map, 'idle', () => {
-    axios.get('https://ipinfo.io/?token=7eed22252c7672')
+    axios.get('https://ipinfo.io/?token=fcdeb1fd49f66')
     .then(response => {
       const location = response.data.loc.split(',');
       map.setCenter(new google.maps.LatLng(location[0], location[1]))
