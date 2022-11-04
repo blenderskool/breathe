@@ -20,7 +20,7 @@ const mimeType = {
 /**
  * Runs the development build process
  */
-gulp.start('dev');
+gulp.series('dev');
 
 http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url).pathname;
