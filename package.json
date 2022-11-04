@@ -32,6 +32,6 @@
     "gulp-babel": "^7.0.1",
     "gulp-concat": "^2.6.1",
     "gulp-htmlmin": "^5.0.1",
-    "gulp-sass": "^4.0.2"
+    "gulp-sass": "^5.1.0"
   }
 }
